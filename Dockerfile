@@ -15,10 +15,7 @@ RUN npm run build
 
 
 #### Stage 2: Serve the application with Nginx ####
-FROM nginx:stable-alpine
-
-# Entferne die Standard-Nginx-Konfiguration
-RUN rm -rf /usr/share/nginx/html/*
+FROM nginx:stable-alpine AS stable
 
 # Kopiere die gebauten Dateien aus dem vorherigen Stage
 COPY --from=build /app/dist /usr/share/nginx/html
