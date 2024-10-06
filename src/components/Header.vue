@@ -1,6 +1,5 @@
 <template>
     <v-app-bar scroll-behavior="collapse" :elevation="2" rounded app color="#A5B68D" dark>
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
         <v-toolbar-title>StudyMaster</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn variant="tonal" @click="login">Login</v-btn>
@@ -8,6 +7,7 @@
 </template>
 
 <script>
+
 export default {
     name: 'Header',
     methods: {
