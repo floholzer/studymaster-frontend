@@ -1,18 +1,21 @@
-<template>
-  <HelloWorld />
-</template>
+  <template>
+    <Header />
+    <Footer />
+  </template>
 
-<script>
-import { defineComponent } from 'vue';
+  <script>
+  import { defineComponent } from 'vue';
 
-// Components
-import HelloWorld from '../components/HelloWorld.vue';
+  // Components
+  import Header from '@/components/Header.vue';
+  import Footer from '@/components/Footer.vue';
 
-export default defineComponent({
-  name: 'HomeView',
+  export default defineComponent({
+    name: 'HomeView',
 
-  components: {
-    HelloWorld,
-  },
-});
-</script>
+    components: {
+      Header,
+      Footer,
+    },
+  });
+  </script>
