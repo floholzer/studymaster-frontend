@@ -14,6 +14,7 @@ export default {
         login() {
             // Login-Logik hier implementieren
             console.log('Login button clicked');
+            this.$router.push({ name: 'login' });
         },
     },
 };
