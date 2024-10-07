@@ -9,8 +9,12 @@
           <input type="email" id="email" v-model="email" required />
         </div>
         <div v-if="!isLoginMode" class="input-group">
-          <label for="name">Name</label>
-          <input type="text" id="name" v-model="name" required />
+          <label for="first_name">Vorname</label>
+          <input type="text" id="first_name" v-model="first_name" required />
+        </div>
+        <div v-if="!isLoginMode" class="input-group">
+          <label for="last_name">Nachname</label>
+          <input type="text" id="last_name" v-model="last_name" required />
         </div>
         <div v-if="!isLoginMode" class="input-group">
           <label for="username">Benutzername</label>
@@ -47,11 +51,12 @@ export default defineComponent({
   name: 'LoginView',
   components: {Footer, Header},
   setup() {
+    const username = ref(''); // Neu für Registrierung
     const email = ref('');
     const password = ref('');
-    const name = ref(''); // Neu für Registrierung
-    const username = ref(''); // Neu für Registrierung
     const confirmPassword = ref(''); // Neu für Registrierung
+    const first_name = ref(''); // Neu für Registrierung
+    const last_name = ref(''); // Neu für Registrierung
     const errorMessage = ref('');
     const isLoginMode = ref(true); // Login- oder Registrierungsmodus
 
@@ -63,7 +68,8 @@ export default defineComponent({
     const resetForm = () => {
       email.value = '';
       password.value = '';
-      name.value = '';
+      first_name.value = '';
+      last_name.value = '';
       username.value = '';
       confirmPassword.value = '';
       errorMessage.value = '';
@@ -90,7 +96,8 @@ export default defineComponent({
     return {
       email,
       password,
-      name,
+      first_name,
+      last_name,
       username,
       confirmPassword,
       errorMessage,
@@ -128,7 +135,7 @@ h1 {
 }
 
 .input-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 label {
@@ -170,7 +177,7 @@ input {
 
 .toggle-text {
   text-align: center;
-  margin-top: 1.5rem;
+  margin-top: 1.0rem;
 }
 
 .toggle-text a {
