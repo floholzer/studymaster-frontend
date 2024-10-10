@@ -1,192 +1,137 @@
 <template>
   <Header />
-  <div class="login-container">
-    <div class="login-box">
-      <h1>{{ isLoginMode ? 'Login' : 'Registrierung' }}</h1>
-      <form @submit.prevent="isLoginMode ? handleLogin : handleRegister">
-        <div class="input-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" v-model="email" required />
-        </div>
-        <div v-if="!isLoginMode" class="input-group">
-          <label for="first_name">Vorname</label>
-          <input type="text" id="first_name" v-model="first_name" required />
-        </div>
-        <div v-if="!isLoginMode" class="input-group">
-          <label for="last_name">Nachname</label>
-          <input type="text" id="last_name" v-model="last_name" required />
-        </div>
-        <div v-if="!isLoginMode" class="input-group">
-          <label for="username">Benutzername</label>
-          <input type="text" id="username" v-model="username" required />
-        </div>
-        <div class="input-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" v-model="password" required />
-        </div>
-        <div v-if="!isLoginMode" class="input-group">
-          <label for="confirmPassword">Passwort bestätigen</label>
-          <input type="password" id="confirmPassword" v-model="confirmPassword" required />
-        </div>
-        <div v-if="errorMessage" class="error-message">
+  <v-container class="fill-height" justify="center" align="center">
+    <v-sheet elevation="3" class="pa-5 ma-5" max-width="400">
+      <h1 class="text-center mb-4">{{ isLoginMode ? 'Login' : 'Registrierung' }}</h1>
+      <v-form @submit.prevent="isLoginMode ? handleLogin : handleRegister">
+        <v-text-field
+            v-model="email"
+            label="Email"
+            type="email"
+            required
+            outlined
+        />
+        <v-text-field
+            v-if="!isLoginMode"
+            v-model="first_name"
+            label="Vorname"
+            type="text"
+            required
+            outlined
+        />
+        <v-text-field
+            v-if="!isLoginMode"
+            v-model="last_name"
+            label="Nachname"
+            type="text"
+            required
+            outlined
+        />
+        <v-text-field
+            v-if="!isLoginMode"
+            v-model="username"
+            label="Benutzername"
+            type="text"
+            required
+            outlined
+        />
+        <v-text-field
+            v-model="password"
+            label="Passwort"
+            type="password"
+            required
+            outlined
+        />
+        <v-text-field
+            v-if="!isLoginMode"
+            v-model="confirmPassword"
+            label="Passwort bestätigen"
+            type="password"
+            required
+            outlined
+        />
+        <v-alert
+            v-if="errorMessage"
+            type="error"
+            dense
+            class="mt-3"
+        >
           {{ errorMessage }}
-        </div>
-        <button type="submit" class="login-button">{{ isLoginMode ? 'Login' : 'Registrieren' }}</button>
-      </form>
-      <p class="toggle-text">
+        </v-alert>
+        <v-btn
+            class="mt-4"
+            color="primary"
+            block
+            type="submit"
+        >
+          {{ isLoginMode ? 'Login' : 'Registrieren' }}
+        </v-btn>
+      </v-form>
+      <p class="text-center mt-4">
         {{ isLoginMode ? 'Noch kein Konto?' : 'Schon ein Konto?' }}
-        <a href="#" @click.prevent="toggleMode">{{ isLoginMode ? 'Registrieren' : 'Login' }}</a>
+        <v-btn text @click.prevent="toggleMode">{{ isLoginMode ? 'Registrieren' : 'Login' }}</v-btn>
       </p>
-    </div>
-  </div>
+    </v-sheet>
+  </v-container>
   <Footer />
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue';
+<script setup>
+import { ref } from 'vue';
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 
-export default defineComponent({
-  name: 'LoginView',
-  components: {Footer, Header},
-  setup() {
-    const username = ref(''); // Neu für Registrierung
-    const email = ref('');
-    const password = ref('');
-    const confirmPassword = ref(''); // Neu für Registrierung
-    const first_name = ref(''); // Neu für Registrierung
-    const last_name = ref(''); // Neu für Registrierung
-    const errorMessage = ref('');
-    const isLoginMode = ref(true); // Login- oder Registrierungsmodus
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref('');
+const first_name = ref('');
+const last_name = ref('');
+const username = ref('');
+const errorMessage = ref('');
+const isLoginMode = ref(true);
 
-    const toggleMode = () => {
-      isLoginMode.value = !isLoginMode.value;
-      resetForm();
-    };
+const toggleMode = () => {
+  isLoginMode.value = !isLoginMode.value;
+  resetForm();
+};
 
-    const resetForm = () => {
-      email.value = '';
-      password.value = '';
-      first_name.value = '';
-      last_name.value = '';
-      username.value = '';
-      confirmPassword.value = '';
-      errorMessage.value = '';
-    };
+const resetForm = () => {
+  email.value = '';
+  password.value = '';
+  confirmPassword.value = '';
+  first_name.value = '';
+  last_name.value = '';
+  username.value = '';
+  errorMessage.value = '';
+};
 
-    const handleLogin = () => {
-      // Dummy login validation
-      if (email.value === 'user@example.com' && password.value === 'password123') {
-        alert('Login erfolgreich!');
-      } else {
-        errorMessage.value = 'Ungültige E-Mail oder Passwort. Bitte versuche es erneut.';
-      }
-    };
+const handleLogin = () => {
+  if (email.value === 'user@example.com' && password.value === 'password123') {
+    alert('Login erfolgreich!');
+  } else {
+    errorMessage.value = 'Ungültige E-Mail oder Passwort. Bitte versuche es erneut.';
+  }
+};
 
-    const handleRegister = () => {
-      // Dummy registration validation
-      if (password.value !== confirmPassword.value) {
-        errorMessage.value = 'Passwörter stimmen nicht überein!';
-      } else {
-        alert('Registrierung erfolgreich!');
-      }
-    };
-
-    return {
-      email,
-      password,
-      first_name,
-      last_name,
-      username,
-      confirmPassword,
-      errorMessage,
-      isLoginMode,
-      toggleMode,
-      handleLogin,
-      handleRegister,
-    };
-  },
-});
+const handleRegister = () => {
+  if (password.value !== confirmPassword.value) {
+    errorMessage.value = 'Passwörter stimmen nicht überein!';
+  } else {
+    alert('Registrierung erfolgreich!');
+  }
+};
 </script>
 
 <style scoped>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.fill-height {
   height: 100vh;
-  background-color: #f5f5f5;
 }
 
-.login-box {
+.v-sheet {
   background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  width: 100%;
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 2rem;
-  color: #333;
-}
-
-.input-group {
-  margin-bottom: 0.5rem;
-}
-
-label {
-  display: block;
-  font-size: 0.9rem;
-  color: #333;
-  margin-bottom: 0.5rem;
-}
-
-input {
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.error-message {
-  color: red;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-}
-
-.login-button {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
+.v-btn {
   cursor: pointer;
-}
-
-.login-button:hover {
-  background-color: #0056b3;
-}
-
-.toggle-text {
-  text-align: center;
-  margin-top: 1.0rem;
-}
-
-.toggle-text a {
-  color: #007bff;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.toggle-text a:hover {
-  text-decoration: underline;
 }
 </style>
