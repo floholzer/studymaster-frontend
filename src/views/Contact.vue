@@ -1,139 +1,81 @@
 <template>
   <Header />
-  <div class="contact">
-    <h1>Kontaktieren Sie uns</h1>
-    <p>Wir freuen uns auf Ihre Nachricht!</p>
-    <form @submit.prevent="submitForm">
-      <div class="form-group">
-        <label for="name">Name:</label>
-        <input v-model="form.name" type="text" id="name" placeholder="Ihr Name" required />
-      </div>
+  <v-container class="fill-height" justify="center" align="center">
+    <v-sheet elevation="3" class="pa-5 ma-5" max-width="600">
+      <h1 class="text-center mb-4">Kontaktieren Sie uns</h1>
+      <p class="text-center mb-4">Wir freuen uns auf Ihre Nachricht!</p>
+      <v-form @submit.prevent="submitForm">
+        <v-text-field
+            v-model="form.name"
+            label="Name"
+            type="text"
+            placeholder="Ihr Name"
+            outlined
+            required
+        />
+        <v-text-field
+            v-model="form.email"
+            label="E-Mail"
+            type="email"
+            placeholder="Ihre E-Mail"
+            outlined
+            required
+        />
+        <v-textarea
+            v-model="form.message"
+            label="Nachricht"
+            placeholder="Ihre Nachricht"
+            rows="5"
+            outlined
+            required
+        />
+        <v-btn class="mt-4" color="primary" block type="submit">
+          Absenden
+        </v-btn>
+      </v-form>
 
-      <div class="form-group">
-        <label for="email">E-Mail:</label>
-        <input v-model="form.email" type="email" id="email" placeholder="Ihre E-Mail" required />
-      </div>
-
-      <div class="form-group">
-        <label for="message">Nachricht:</label>
-        <textarea v-model="form.message" id="message" rows="5" placeholder="Ihre Nachricht" required></textarea>
-      </div>
-
-      <button type="submit">Absenden</button>
-    </form>
-
-    <p v-if="submitted" class="success-message">Danke für Ihre Nachricht! Wir melden uns bald bei Ihnen.</p>
-  </div>
+      <v-alert v-if="submitted" type="success" class="mt-4">
+        Danke für Ihre Nachricht! Wir melden uns bald bei Ihnen.
+      </v-alert>
+    </v-sheet>
+  </v-container>
   <Footer />
 </template>
 
-<script>
-import {defineComponent} from 'vue';
-
-// Components
+<script setup>
+import { ref } from 'vue';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 
-export default defineComponent({
-  name: 'Contact',
-
-  components: {
-    Header,
-    Footer,
-  },
-
-  data() {
-    return {
-      form: {
-        name: '',
-        email: '',
-        message: '',
-      },
-      submitted: false,
-    };
-  },
-
-  methods: {
-    submitForm() {
-
-      // hier noch API-Integration hinzugefügen
-
-      console.log('Formular abgesendet:', this.form);
-      this.submitted = true;
-
-      // Formular nach Absenden leeren
-      this.form.name = '';
-      this.form.email = '';
-      this.form.message = '';
-    },
-  },
+const form = ref({
+  name: '',
+  email: '',
+  message: '',
 });
+const submitted = ref(false);
+
+const submitForm = () => {
+  // API-Integration hier hinzufügen
+  console.log('Formular abgesendet:', form.value);
+  submitted.value = true;
+
+  // Formular nach Absenden leeren
+  form.value.name = '';
+  form.value.email = '';
+  form.value.message = '';
+};
 </script>
 
-<style>
-.contact {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
+<style scoped>
+.fill-height {
+  height: 100vh;
 }
 
-.contact h1 {
-  text-align: center;
-  margin-bottom: 20px;
+.v-sheet {
+  background-color: white;
 }
 
-.contact p {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 18px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-input, textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
+.v-btn {
   cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-.success-message {
-  text-align: center;
-  color: green;
-  margin-top: 20px;
-}
-
-@media (min-width: 1024px) {
-  .contact {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
 }
 </style>
