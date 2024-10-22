@@ -1,6 +1,7 @@
   <template>
     <Header />
     <Login />
+    <Register />
     <Footer />
   </template>
 
@@ -11,6 +12,7 @@
   import Header from '@/components/Header.vue';
   import Footer from '@/components/Footer.vue';
   import Login from '@/components/Login.vue';
+  import Register from '@/components/Register.vue';
 
   export default defineComponent({
     name: 'HomeView',
@@ -19,6 +21,7 @@
       Header,
       Footer,
       Login,
+      Register,
     },
   });
   </script>
