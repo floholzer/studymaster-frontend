@@ -1,31 +1,54 @@
 <template>
   <v-dialog :model-value="isOpen" persistent max-width="400px" @update:modelValue="onDialogClose">
     <v-card>
-      <v-card-title class="headline">Login</v-card-title>
+      <v-card-title class="headline">
+        <!-- Dynamischer Titel -->
+        {{ isRegistering ? 'Registrieren' : 'Login' }}
+      </v-card-title>
       <v-card-text>
         <v-form>
-          <!-- Benutzername -->
+          <!-- Gemeinsames Benutzername-Feld -->
           <v-text-field
               v-model="username"
               label="Benutzername"
               required
           ></v-text-field>
 
-          <!-- Passwort -->
+          <!-- Passwortfeld für Login und Registrierung -->
           <v-text-field
               v-model="password"
               label="Passwort"
               type="password"
               required
           ></v-text-field>
+
+          <!-- Wiederholung des Passworts nur bei Registrierung -->
+          <v-text-field
+              v-if="isRegistering"
+              v-model="passwordConfirm"
+              label="Passwort bestätigen"
+              type="password"
+              required
+          ></v-text-field>
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <!-- Login-Button -->
-        <v-btn color="primary" @click="login">Login</v-btn>
+        <!-- Umschalten zwischen Login und Registrierung -->
+        <v-btn @click="toggleForm">
+          {{ isRegistering ? 'Zum Login' : 'Registrieren' }}
+        </v-btn>
+
+        <v-spacer/>
+
+        <!-- Dynamischer Button für Login oder Registrierung -->
+        <v-btn color="primary" variant="elevated" @click="isRegistering ? register : login">
+          {{ isRegistering ? 'Registrieren' : 'Login' }}
+        </v-btn>
 
         <!-- Schließen-Button -->
         <v-btn text @click="closeDialog">Schließen</v-btn>
+
+
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -47,6 +70,8 @@ export default {
     return {
       username: "",
       password: "",
+      passwordConfirm: "",
+      isRegistering: false,
     };
   },
   methods: {
@@ -66,6 +91,26 @@ export default {
         console.error("Login fehlgeschlagen:", error);
         alert("Login fehlgeschlagen. Bitte überprüfen Sie Benutzername und Passwort.");
       }
+    },
+    async register() {
+      try {
+        if (this.username && this.password && this.password === this.passwordConfirm) {
+          alert(`Registrierung erfolgreich! Benutzername: ${this.username}`);
+          this.closeDialog();
+        } else if (this.password !== this.passwordConfirm) {
+          alert('Die Passwörter stimmen nicht überein.');
+        } else {
+          alert('Bitte alle Felder ausfüllen.');
+        }
+      } catch (error) {
+        console.error("Register fehlgeschlagen:", error);
+      }
+    },
+    // Umschalten zwischen Login und Registrierung
+    toggleForm() {
+      this.isRegistering = !this.isRegistering;
+      this.password = '';
+      this.passwordConfirm = '';
     },
     closeDialog() {
       this.$emit('update:modelValue', false); // Login-Dialog schließen
