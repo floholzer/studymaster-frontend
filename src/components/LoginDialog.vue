@@ -84,9 +84,11 @@ export default {
         const token = response.data.jwt;
         // Speichere das Token im LocalStorage für zukünftige Anfragen
         localStorage.setItem("jwt", token);
+        this.closeDialog(); // Login Dialog schließen
+
         alert("Login erfolgreich!");
 
-        this.closeDialog(); // Login Dialog schließen
+
       } catch (error) {
         console.error("Login fehlgeschlagen:", error);
         alert("Login fehlgeschlagen. Bitte überprüfen Sie Benutzername und Passwort.");
