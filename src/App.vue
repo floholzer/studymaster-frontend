@@ -4,7 +4,7 @@
     <Header @open-login="openLoginDialog" />
 
     <!-- LoginDialog-Komponente mit v-model zur Steuerung der Sichtbarkeit -->
-    <LoginDialog :isOpen="loginDialogOpen" @update:modelValue="loginDialogOpen = $event"  />
+    <LoginDialog :isOpen="loginDialogOpen" @update:modelValue="loginDialogOpen = $event" @login-success="handleLoginSuccess" />
 
     <v-main>
       <router-view/>
@@ -29,12 +29,18 @@ export default {
   data() {
     return {
       loginDialogOpen: false,
+      authToken: null, // Speichert das Authentifizierungs-Token nach erfolgreichem Login
     };
   },
   methods: {
     openLoginDialog() {
       this.loginDialogOpen = true;
     },
+    // Handhabt das Token nach einem erfolgreichen Login
+    handleLoginSuccess(token) {
+      this.authToken = token;
+      console.log('Token erhalten:', token);
+    }
   },
 };
 </script>

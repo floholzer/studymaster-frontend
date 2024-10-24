@@ -34,15 +34,17 @@
       </v-card-text>
       <v-card-actions>
         <!-- Umschalten zwischen Login und Registrierung -->
-        <v-btn @click="toggleForm">
+        <v-btn text @click="toggleForm">
           {{ isRegistering ? 'Zum Login' : 'Registrieren' }}
         </v-btn>
-
         <v-spacer/>
+        <!-- Login- oder Registrieren-Button basierend auf Zustand -->
+        <v-btn color="primary" variant="elevated" v-if="!isRegistering" @click="login">
+          Login
+        </v-btn>
 
-        <!-- Dynamischer Button für Login oder Registrierung -->
-        <v-btn color="primary" variant="elevated" @click="isRegistering ? register : login">
-          {{ isRegistering ? 'Registrieren' : 'Login' }}
+        <v-btn color="primary" variant="elevated" v-if="isRegistering" @click="register">
+          Registrieren
         </v-btn>
 
         <!-- Schließen-Button -->
@@ -76,36 +78,64 @@ export default {
   },
   methods: {
     async login() {
-      try {
-        const response = await axios.post("http://localhost:8080/auth/login", {
-          username: this.username,
-          password: this.password,
-        });
-        const token = response.data.jwt;
-        // Speichere das Token im LocalStorage für zukünftige Anfragen
-        localStorage.setItem("jwt", token);
-        this.closeDialog(); // Login Dialog schließen
+      console.log("login");
 
-        alert("Login erfolgreich!");
+      if (this.username && this.password) {
+        try {
+          const response = await axios.post("http://localhost:8080/auth/login", {
+            username: this.username,
+            password: this.password,
+          });
+          const token = response.data.jwt;
 
+          // Speichere das Token im LocalStorage für zukünftige Anfragen
+          localStorage.setItem("jwt", token);
 
-      } catch (error) {
-        console.error("Login fehlgeschlagen:", error);
-        alert("Login fehlgeschlagen. Bitte überprüfen Sie Benutzername und Passwort.");
+          this.$emit('login-success', token);
+          this.closeDialog();
+          alert("Login erfolgreich!");
+
+        } catch (error) {
+          // Fehlerbehandlung (z.B. falsche Login-Daten)
+          if (error.response && error.response.status === 401) {
+            alert('Ungültiger Benutzername oder Passwort.');
+          } else {
+            console.error('Login-Fehler:', error);
+            alert('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.');
+          }
+        }
+      } else {
+        alert('Bitte Benutzername und Passwort eingeben.');
       }
     },
     async register() {
-      try {
-        if (this.username && this.password && this.password === this.passwordConfirm) {
-          alert(`Registrierung erfolgreich! Benutzername: ${this.username}`);
-          this.closeDialog();
-        } else if (this.password !== this.passwordConfirm) {
-          alert('Die Passwörter stimmen nicht überein.');
-        } else {
-          alert('Bitte alle Felder ausfüllen.');
+      if (this.username && this.password && this.password === this.passwordConfirm) {
+        try {
+          // Sende POST-Anfrage an den Registrierungs-Endpunkt
+          const response = await axios.post('http://localhost:8080/api/users/register', {
+            username: this.username,
+            email: this.username+"@email.com",
+            password: this.password,
+            first_name: this.username,
+            last_name: "",
+            is_admin: false
+
+          });
+
+          // Erfolgreiche Registrierung
+          if (response.status === 200) {
+            alert('Registrierung erfolgreich! Sie können sich jetzt einloggen.');
+            this.closeDialog();
+            await this.login();
+          }
+        } catch (error) {
+          console.error('Registrierungsfehler:', error);
+          alert('Es gab ein Problem bei der Registrierung. Bitte versuchen Sie es erneut.');
         }
-      } catch (error) {
-        console.error("Register fehlgeschlagen:", error);
+      } else if (this.password !== this.passwordConfirm) {
+        alert('Die Passwörter stimmen nicht überein.');
+      } else {
+        alert('Bitte alle Felder ausfüllen.');
       }
     },
     // Umschalten zwischen Login und Registrierung
