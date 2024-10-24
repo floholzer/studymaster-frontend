@@ -2,7 +2,10 @@
     <v-app-bar scroll-behavior="collapse" :elevation="2" rounded app color="#A5B68D" dark>
         <v-toolbar-title>StudyMaster</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn variant="tonal" @click="login">Login</v-btn>
+        <!-- Button rechts oben, der das Login-Formular zeigt -->
+        <v-btn icon @click="$emit('open-login')">
+          <v-icon>mdi-login</v-icon>
+        </v-btn>
     </v-app-bar>
 </template>
 

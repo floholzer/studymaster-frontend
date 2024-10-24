@@ -1,5 +1,4 @@
 <template>
-  <Header />
   <v-container class="fill-height" justify="center" align="center">
     <v-sheet elevation="3" class="pa-5 ma-5" max-width="600">
       <h1 class="text-center mb-4">Kontaktieren Sie uns</h1>
@@ -39,7 +38,6 @@
       </v-alert>
     </v-sheet>
   </v-container>
-  <Footer />
 </template>
 
 <script setup>

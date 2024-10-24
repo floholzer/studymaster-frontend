@@ -1,9 +1,7 @@
 <template>
-  <Header />
   <div class="about">
     <h1>This is the privacy page</h1>
   </div>
-  <Footer />
 </template>
 
 <script>
