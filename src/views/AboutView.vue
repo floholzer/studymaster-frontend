@@ -1,28 +1,28 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+    <div class="about">
+        <h1>This is an about page</h1>
+    </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import {defineComponent} from 'vue';
 
 export default defineComponent({
-  name: 'AboutView',
+    name: 'AboutView',
 
-  components: {
-    Header,
-    Footer,
-  },
+    components: {
+        Header,
+        Footer,
+    },
 });
 </script>
 
 <style>
 @media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+    .about {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+    }
 }
 </style>
