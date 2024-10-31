@@ -12,7 +12,7 @@
                         v-model="username"
                         label="Benutzername"
                         required
-                    ></v-text-field>
+                    />
 
                     <!-- Passwortfeld für Login und Registrierung -->
                     <v-text-field
@@ -20,7 +20,7 @@
                         label="Passwort"
                         type="password"
                         required
-                    ></v-text-field>
+                    />
 
                     <!-- Wiederholung des Passworts nur bei Registrierung -->
                     <v-text-field
@@ -29,7 +29,7 @@
                         label="Passwort bestätigen"
                         type="password"
                         required
-                    ></v-text-field>
+                    />
                 </v-form>
             </v-card-text>
             <v-card-actions>
