@@ -2,7 +2,7 @@
   <v-container fluid class="d-flex justify-center align-center fill-height">
     <v-col cols="12" md="6">
       <v-card class="pa-4">
-        <v-card-title class="headline text-center">Taskliste - Studium Gamification</v-card-title>
+        <v-card-title class="headline text-center">Taskliste</v-card-title>
         <v-card-text>
           <v-form @submit.prevent="addTask">
             <!-- Fach auswählen -->
