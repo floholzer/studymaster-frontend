@@ -1,43 +1,74 @@
 <template>
   <v-container fluid class="d-flex justify-center align-center fill-height">
-    <v-col cols="12" md="4">
-      <v-card>
-        <v-card-title class="headline text-center">Taskliste</v-card-title>
+    <v-col cols="12" md="6">
+      <v-card class="pa-4">
+        <v-card-title class="headline text-center">Taskliste - Studium Gamification</v-card-title>
         <v-card-text>
           <v-form @submit.prevent="addTask">
-            <!-- Aufgaben-Eingabefeld -->
+            <!-- Fach auswählen -->
+            <v-select
+                v-model="newTask.subject"
+                :items="subjects"
+                label="Fach"
+                outlined
+                required
+            ></v-select>
+
+            <!-- ECTS Punkte -->
             <v-text-field
-                v-model="newTask.name"
-                label="Neue Aufgabe"
-                placeholder="Aufgabe hinzufügen"
+                v-model="newTask.ects"
+                label="ECTS-Punkte für dieses Fach"
+                type="number"
+                min="1"
+                max="30"
+                outlined
                 required
             ></v-text-field>
 
-            <!-- Fälligkeitsdatum-Eingabefeld -->
-            <v-menu
-                v-model="menu"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                    v-model="newTask.dueDate"
-                    label="Fälligkeitsdatum"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                  v-model="newTask.dueDate"
-                  @change="menu = false"
-                  :min="new Date().toISOString().substr(0, 10)" <!-- Optional: Setzt das minimale Datum auf heute -->
-              ></v-date-picker>
-            </v-menu>
+            <!-- Anzahl der Abgaben -->
+            <v-text-field
+                v-model.number="newTask.submissionsCount"
+                label="Anzahl der Abgaben"
+                type="number"
+                min="1"
+                outlined
+                @input="generateSubmissionFields"
+                required
+            ></v-text-field>
+
+            <!-- Dynamisch generierte Felder für Abgaben -->
+            <div v-for="(submission, index) in newTask.submissions" :key="index" class="mt-4">
+              <v-text-field
+                  v-model="submission.name"
+                  label="Name der Abgabe"
+                  outlined
+                  required
+              ></v-text-field>
+              <v-menu
+                  v-model="submission.menu"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                      v-model="submission.dueDate"
+                      label="Fälligkeitsdatum"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      outlined
+                      required
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                    v-model="submission.dueDate"
+                    @change="submission.menu = false"
+                    :min="new Date().toISOString().substr(0, 10)"
+                ></v-date-picker>
+              </v-menu>
+            </div>
 
             <!-- Hinzufügen-Button -->
             <v-btn color="primary" class="mt-4" block type="submit">
@@ -45,13 +76,25 @@
             </v-btn>
           </v-form>
 
+          <!-- Fortschrittsanzeige für ECTS-Punkte -->
+          <div class="mt-6">
+            <h3 class="text-center">Fortschritt - 30 ECTS Ziel</h3>
+            <v-progress-linear :value="progress" color="green" height="20">
+              <template v-slot:default>
+                <span>{{ completedEcts }} / 30 ECTS</span>
+              </template>
+            </v-progress-linear>
+          </div>
+
           <!-- Aufgabenliste -->
-          <v-list>
+          <v-list class="mt-6">
             <v-list-item-group>
               <v-list-item v-for="(task, index) in tasks" :key="index">
                 <v-list-item-content>
-                  <div class="task-name">{{ task.name }}</div>
-                  <small class="due-date">Fällig bis: {{ task.dueDate || 'Kein Datum angegeben' }}</small>
+                  <div class="task-name">{{ task.subject }} - {{ task.ects }} ECTS</div>
+                  <div v-for="submission in task.submissions" :key="submission.name">
+                    <small>{{ submission.name }} - Fällig bis: {{ submission.dueDate }}</small>
+                  </div>
                 </v-list-item-content>
                 <v-list-item-action>
                   <v-btn icon @click="removeTask(index)">
@@ -69,33 +112,54 @@
 
 <script>
 export default {
-  name: 'Tasklist',
+  name: "Tasklist",
   data() {
     return {
-      menu: false, // Steuerung des Datumsauswahlmenüs
+      menu: false,
+      subjects: ["SEPJ", "ITINF", "DIGMA", "SWRM", "ITSEC"], // Beispiel-Fächer
       newTask: {
-        name: '',
-        dueDate: '', // Speichert das Fälligkeitsdatum für die neue Aufgabe
+        subject: "",
+        ects: 1,
+        submissionsCount: 1,
+        submissions: [],
       },
       tasks: [],
+      completedEcts: 0, // Fortgeschrittene ECTS
     };
+  },
+  computed: {
+    progress() {
+      return (this.completedEcts / 30) * 100;
+    },
   },
   methods: {
     addTask() {
-      if (this.newTask.name.trim()) {
-        this.tasks.push({
-          name: this.newTask.name.trim(),
-          dueDate: this.newTask.dueDate, // Speichert das ausgewählte Fälligkeitsdatum
-        });
-        this.resetForm(); // Eingabefelder zurücksetzen
+      // Aufgabe hinzufügen und ECTS zur Fortschrittsanzeige hinzufügen
+      if (this.newTask.subject && this.newTask.ects && this.newTask.submissions.length) {
+        this.tasks.push({ ...this.newTask });
+        this.completedEcts += this.newTask.ects;
+        this.resetForm();
       }
     },
+    generateSubmissionFields() {
+      // Generiert Felder für jede Abgabe
+      this.newTask.submissions = Array.from({ length: this.newTask.submissionsCount }, () => ({
+        name: "",
+        dueDate: "",
+        menu: false,
+      }));
+    },
     removeTask(index) {
-      this.tasks.splice(index, 1); // Entfernt die Aufgabe an der angegebenen Position
+      // Entfernt die Aufgabe und aktualisiert die Fortschrittsanzeige
+      this.completedEcts -= this.tasks[index].ects;
+      this.tasks.splice(index, 1);
     },
     resetForm() {
-      this.newTask.name = '';
-      this.newTask.dueDate = '';
+      // Formular und Abgabefelder zurücksetzen
+      this.newTask.subject = "";
+      this.newTask.ects = 1;
+      this.newTask.submissionsCount = 1;
+      this.newTask.submissions = [];
     },
   },
 };
@@ -103,7 +167,7 @@ export default {
 
 <style scoped>
 .fill-height {
-  height: 100vh; /* Füllt die gesamte Höhe des Bildschirms */
+  height: 100vh;
 }
 .task-name {
   font-weight: bold;
