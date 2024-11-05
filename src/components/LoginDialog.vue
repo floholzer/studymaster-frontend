@@ -93,7 +93,6 @@ export default {
                     localStorage.setItem("jwt", token);
                     this.$emit('login-success', token);
                     this.closeDialog();
-                    this.showAlert("Login successful!", "success");
                 } catch (error) {
                     this.password = "";
                     if (error.response && error.response.status === 401) {
@@ -119,7 +118,6 @@ export default {
                         is_admin: false
                     });
                     if (response.status === 200) {
-                        this.showAlert('Registration successful! You can now log in.', 'success');
                         this.closeDialog();
                         await this.login();
                     }
@@ -154,6 +152,7 @@ export default {
             } else {
                 this.login();
             }
+            this.alertMessage = "";
         },
         showAlert(message, type) {
             this.alertMessage = message;
