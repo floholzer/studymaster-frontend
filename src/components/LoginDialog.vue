@@ -1,5 +1,5 @@
 <template>
-    <v-dialog :model-value="isOpen" persistent max-width="400px" @update:modelValue="onDialogClose">
+    <v-dialog :model-value="isOpen" persistent max-width="400px" @update:modelValue="onDialogClose" @opened="focusUsername">
         <v-card>
             <v-card-title class="headline">
                 <v-icon class="mr-2">{{ isRegistering ? 'mdi-account-plus' : 'mdi-login' }}</v-icon>
@@ -12,6 +12,7 @@
                         label="Username"
                         prepend-icon="mdi-account"
                         required
+                        ref="usernameField"
                     />
                     <v-text-field
                         v-model="password"
@@ -70,6 +71,15 @@ export default {
             alertMessage: "",
             alertType: "info",
         };
+    },
+    watch: {
+        isOpen(newVal) {
+            if (newVal) {
+                this.$nextTick(() => {
+                    this.$refs.usernameField.focus();
+                });
+            }
+        }
     },
     methods: {
         async login() {
