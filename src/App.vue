@@ -28,6 +28,13 @@ export default {
             isLoggedIn: false,
         };
     },
+    created() {
+        const token = localStorage.getItem("jwt");
+        if (token) {
+            this.authToken = token;
+            this.isLoggedIn = true;
+        }
+    },
     methods: {
         openLoginDialog() {
             this.loginDialogOpen = true;
