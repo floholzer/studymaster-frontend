@@ -29,6 +29,9 @@
                         required
                     />
                 </v-form>
+                <v-alert v-if="alertMessage" :type="alertType" dismissible @input="alertMessage = ''">
+                    {{ alertMessage }}
+                </v-alert>
             </v-card-text>
             <v-card-actions>
                 <v-btn text @click="toggleForm">
@@ -64,6 +67,8 @@ export default {
             password: "",
             passwordConfirm: "",
             isRegistering: false,
+            alertMessage: "",
+            alertType: "info",
         };
     },
     methods: {
@@ -78,17 +83,18 @@ export default {
                     localStorage.setItem("jwt", token);
                     this.$emit('login-success', token);
                     this.closeDialog();
-                    alert("Login successful!");
+                    this.showAlert("Login successful!", "success");
                 } catch (error) {
+                    this.password = "";
                     if (error.response && error.response.status === 401) {
-                        alert('Invalid username or password.');
+                        this.showAlert('Invalid username or password.', 'error');
                     } else {
                         console.error('Login error:', error);
-                        alert('An error occurred. Please try again.');
+                        this.showAlert('An error occurred. Please try again.', 'error');
                     }
                 }
             } else {
-                alert('Please enter username and password.');
+                this.showAlert('Please enter username and password.', 'warning');
             }
         },
         async register() {
@@ -103,18 +109,18 @@ export default {
                         is_admin: false
                     });
                     if (response.status === 200) {
-                        alert('Registration successful! You can now log in.');
+                        this.showAlert('Registration successful! You can now log in.', 'success');
                         this.closeDialog();
                         await this.login();
                     }
                 } catch (error) {
                     console.error('Registration error:', error);
-                    alert('There was a problem with the registration. Please try again.');
+                    this.showAlert('There was a problem with the registration. Please try again.', 'error');
                 }
             } else if (this.password !== this.passwordConfirm) {
-                alert('Passwords do not match.');
+                this.showAlert('Passwords do not match.', 'warning');
             } else {
-                alert('Please fill in all fields.');
+                this.showAlert('Please fill in all fields.', 'warning');
             }
         },
         toggleForm() {
@@ -124,6 +130,10 @@ export default {
         },
         closeDialog() {
             this.$emit('update:modelValue', false);
+            this.username = "";
+            this.password = "";
+            this.passwordConfirm = "";
+            this.alertMessage = "";
         },
         onDialogClose(value) {
             this.$emit('update:modelValue', value);
@@ -134,6 +144,10 @@ export default {
             } else {
                 this.login();
             }
+        },
+        showAlert(message, type) {
+            this.alertMessage = message;
+            this.alertType = type;
         }
     },
 };
