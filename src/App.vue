@@ -1,7 +1,8 @@
 <template>
     <v-app>
         <Header :isLoggedIn="isLoggedIn" @open-login="openLoginDialog" @logout="logout"/>
-        <LoginDialog :isOpen="loginDialogOpen" @update:modelValue="loginDialogOpen = $event" @login-success="handleLoginSuccess"/>
+        <LoginDialog :isOpen="loginDialogOpen" @update:modelValue="loginDialogOpen = $event"
+                     @login-success="handleLoginSuccess"/>
         <v-main>
             <router-view :isLoggedIn="isLoggedIn" @open-login="openLoginDialog"/>
         </v-main>
@@ -28,7 +29,7 @@ export default {
             isLoggedIn: false,
         };
     },
-    created() {
+    created() { //check if user is already logged in
         const token = localStorage.getItem("jwt");
         if (token) {
             this.authToken = token;
