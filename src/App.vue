@@ -1,14 +1,9 @@
 <template>
     <v-app>
-        <!-- Header-Komponente mit einem Event, um das Login-Fenster zu öffnen -->
-        <Header @open-login="openLoginDialog"/>
-
-        <!-- LoginDialog-Komponente mit v-model zur Steuerung der Sichtbarkeit -->
-        <LoginDialog :isOpen="loginDialogOpen" @update:modelValue="loginDialogOpen = $event"
-                     @login-success="handleLoginSuccess"/>
-
+        <Header :isLoggedIn="isLoggedIn" @open-login="openLoginDialog" @logout="logout"/>
+        <LoginDialog :isOpen="loginDialogOpen" @update:modelValue="loginDialogOpen = $event" @login-success="handleLoginSuccess"/>
         <v-main>
-            <router-view/>
+            <router-view :isLoggedIn="isLoggedIn" @open-login="openLoginDialog"/>
         </v-main>
         <Footer/>
     </v-app>
@@ -26,21 +21,26 @@ export default {
         LoginDialog,
         Footer,
     },
-
     data() {
         return {
             loginDialogOpen: false,
-            authToken: null, // Speichert das Authentifizierungs-Token nach erfolgreichem Login
+            authToken: null,
+            isLoggedIn: false,
         };
     },
     methods: {
         openLoginDialog() {
             this.loginDialogOpen = true;
         },
-        // Handhabt das Token nach einem erfolgreichen Login
         handleLoginSuccess(token) {
             this.authToken = token;
-            console.log('Token erhalten:', token);
+            this.isLoggedIn = true;
+            console.log('Token received:', token);
+        },
+        logout() {
+            this.authToken = null;
+            this.isLoggedIn = false;
+            localStorage.removeItem("jwt");
         }
     },
 };

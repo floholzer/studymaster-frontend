@@ -2,62 +2,52 @@
     <v-dialog :model-value="isOpen" persistent max-width="400px" @update:modelValue="onDialogClose">
         <v-card>
             <v-card-title class="headline">
-                <!-- Dynamischer Titel -->
-                {{ isRegistering ? 'Registrieren' : 'Login' }}
+                <v-icon class="mr-2">{{ isRegistering ? 'mdi-account-plus' : 'mdi-login' }}</v-icon>
+                {{ isRegistering ? 'Register' : 'Login' }}
             </v-card-title>
             <v-card-text>
-                <v-form>
-                    <!-- Gemeinsames Benutzername-Feld -->
+                <v-form @keydown.enter="submitForm">
                     <v-text-field
                         v-model="username"
-                        label="Benutzername"
+                        label="Username"
+                        prepend-icon="mdi-account"
                         required
                     />
-
-                    <!-- Passwortfeld für Login und Registrierung -->
                     <v-text-field
                         v-model="password"
-                        label="Passwort"
+                        label="Password"
                         type="password"
+                        prepend-icon="mdi-lock"
                         required
                     />
-
-                    <!-- Wiederholung des Passworts nur bei Registrierung -->
                     <v-text-field
                         v-if="isRegistering"
                         v-model="passwordConfirm"
-                        label="Passwort bestätigen"
+                        label="Confirm Password"
                         type="password"
+                        prepend-icon="mdi-lock-check"
                         required
                     />
                 </v-form>
             </v-card-text>
             <v-card-actions>
-                <!-- Umschalten zwischen Login und Registrierung -->
                 <v-btn text @click="toggleForm">
-                    {{ isRegistering ? 'Zum Login' : 'Registrieren' }}
+                    {{ isRegistering ? 'Switch to Login' : 'Register' }}
                 </v-btn>
                 <v-spacer/>
-                <!-- Login- oder Registrieren-Button basierend auf Zustand -->
                 <v-btn color="primary" variant="elevated" v-if="!isRegistering" @click="login">
                     Login
                 </v-btn>
-
                 <v-btn color="primary" variant="elevated" v-if="isRegistering" @click="register">
-                    Registrieren
+                    Register
                 </v-btn>
-
-                <!-- Schließen-Button -->
-                <v-btn text @click="closeDialog">Schließen</v-btn>
-
-
+                <v-btn text @click="closeDialog">Close</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
 
 <script>
-// Axios hier importieren
 import axios from 'axios';
 
 export default {
@@ -78,8 +68,6 @@ export default {
     },
     methods: {
         async login() {
-            console.log("login");
-
             if (this.username && this.password) {
                 try {
                     const response = await axios.post("http://localhost:8080/auth/login", {
@@ -87,31 +75,25 @@ export default {
                         password: this.password,
                     });
                     const token = response.data.jwt;
-
-                    // Speichere das Token im LocalStorage für zukünftige Anfragen
                     localStorage.setItem("jwt", token);
-
                     this.$emit('login-success', token);
                     this.closeDialog();
-                    alert("Login erfolgreich!");
-
+                    alert("Login successful!");
                 } catch (error) {
-                    // Fehlerbehandlung (z.B. falsche Login-Daten)
                     if (error.response && error.response.status === 401) {
-                        alert('Ungültiger Benutzername oder Passwort.');
+                        alert('Invalid username or password.');
                     } else {
-                        console.error('Login-Fehler:', error);
-                        alert('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.');
+                        console.error('Login error:', error);
+                        alert('An error occurred. Please try again.');
                     }
                 }
             } else {
-                alert('Bitte Benutzername und Passwort eingeben.');
+                alert('Please enter username and password.');
             }
         },
         async register() {
             if (this.username && this.password && this.password === this.passwordConfirm) {
                 try {
-                    // Sende POST-Anfrage an den Registrierungs-Endpunkt
                     const response = await axios.post('http://localhost:8080/api/users/register', {
                         username: this.username,
                         email: this.username + "@email.com",
@@ -119,38 +101,47 @@ export default {
                         first_name: this.username,
                         last_name: "",
                         is_admin: false
-
                     });
-
-                    // Erfolgreiche Registrierung
                     if (response.status === 200) {
-                        alert('Registrierung erfolgreich! Sie können sich jetzt einloggen.');
+                        alert('Registration successful! You can now log in.');
                         this.closeDialog();
                         await this.login();
                     }
                 } catch (error) {
-                    console.error('Registrierungsfehler:', error);
-                    alert('Es gab ein Problem bei der Registrierung. Bitte versuchen Sie es erneut.');
+                    console.error('Registration error:', error);
+                    alert('There was a problem with the registration. Please try again.');
                 }
             } else if (this.password !== this.passwordConfirm) {
-                alert('Die Passwörter stimmen nicht überein.');
+                alert('Passwords do not match.');
             } else {
-                alert('Bitte alle Felder ausfüllen.');
+                alert('Please fill in all fields.');
             }
         },
-        // Umschalten zwischen Login und Registrierung
         toggleForm() {
             this.isRegistering = !this.isRegistering;
             this.password = '';
             this.passwordConfirm = '';
         },
         closeDialog() {
-            this.$emit('update:modelValue', false); // Login-Dialog schließen
+            this.$emit('update:modelValue', false);
         },
         onDialogClose(value) {
-            // Übergabe des model-value Wertes nach außen
             this.$emit('update:modelValue', value);
+        },
+        submitForm() {
+            if (this.isRegistering) {
+                this.register();
+            } else {
+                this.login();
+            }
         }
     },
 };
 </script>
+
+<style scoped>
+.v-card-title {
+    display: flex;
+    align-items: center;
+}
+</style>
