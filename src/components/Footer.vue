@@ -1,10 +1,10 @@
 <template>
-    <v-footer class="footer" color="#b0a799">
+    <v-footer class="footer" color="#182426">
         <v-row justify="center" no-gutters>
             <router-link>
 
             </router-link>
-            <v-btn v-for="link in links" :href="link.href" :key="link" class="mx-2" color="#3C3D37" rounded="xl" variant="text">
+            <v-btn v-for="link in links" :href="link.href" :key="link" class="mx-2" color="#D9A79C" rounded="xl" variant="text">
                 {{ link.text }}
             </v-btn>
             <v-col class="text-center mt-2" id="footer-text" cols="12">
@@ -46,6 +46,6 @@ export default {
     width: 100%;
 }
 #footer-text {
-    color: #3C3D37;
+    color: #D9A79C;
 }
 </style>

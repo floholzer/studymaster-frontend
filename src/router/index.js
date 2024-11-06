@@ -34,6 +34,12 @@ const router = createRouter({
             name: 'privacy',
             component: () => import('../views/Privacy.vue'),
             meta: {title: 'StudyMaster | Privacy'},
+        },
+        {
+            path: '/profile',
+            name: 'profile',
+            component: () => import('../views/Profile.vue'),
+            meta: {title: 'StudyMaster | Profile'},
         }
     ]
 })
