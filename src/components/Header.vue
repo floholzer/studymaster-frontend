@@ -1,43 +1,37 @@
 <template>
     <v-app-bar scroll-behavior="fully-hide" :elevation="2" rounded app color="#99BFBB" dark>
-        <router-link to="/" class="v-toolbar-title" style="text-decoration: none; color: inherit;">
+        <router-link to="/studymaster" class="v-toolbar-title" style="text-decoration: none; color: inherit;">
             StudyMaster
         </router-link>
         <v-spacer></v-spacer>
-        <template v-if="!isLoggedIn">
-            <v-btn rounded="xl" color="#F87A53" variant="flat" @click="$emit('open-login')">
-                Get Started
-            </v-btn>
-        </template>
-        <template v-else>
-            <v-menu transition="slide-y-transition" width="200" class="mx-auto">
-                <template v-slot:activator="{ props }">
-                    <v-btn variant="tonal" icon="mdi-account" v-bind="props"></v-btn>
-                </template>
-                <v-list>
-                    <router-link to="/profile" style="text-decoration: none; color: inherit;">
-                        <v-list-item prepend-icon="mdi-pencil" title="Account"></v-list-item>
-                    </router-link>
-                    <v-list-item prepend-icon="mdi-logout" @click="confirmLogout" title="Logout"></v-list-item>
-                </v-list>
-            </v-menu>
-        </template>
+        <v-menu transition="slide-y-transition" width="200" class="mx-auto">
+            <template v-slot:activator="{ props }">
+                <v-btn variant="tonal" icon="mdi-account" v-bind="props"></v-btn>
+            </template>
+            <v-list>
+                <router-link to="/studymaster" style="text-decoration: none; color: inherit;">
+                    <v-list-item prepend-icon="mdi-pencil" title="StudyMaster"></v-list-item>
+                </router-link>
+                <router-link to="/profile" style="text-decoration: none; color: inherit;">
+                    <v-list-item prepend-icon="mdi-account" title="Profile"></v-list-item>
+                </router-link>
+                <v-list-item prepend-icon="mdi-logout" title="Logout" @click="handleLogout()"></v-list-item>
+            </v-list>
+        </v-menu>
     </v-app-bar>
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
     name: 'Header',
-    props: {
-        isLoggedIn: {
-            type: Boolean,
-            required: true,
+    methods: {
+        ...mapActions(['logout']),
+        handleLogout() {
+            this.logout(); // Führt die Logout-Action aus
+            this.$router.push('/'); // Leitet zur Login-Seite weiter
         }
     },
-    methods: {
-        confirmLogout() {
-            this.$emit('logout');
-        }
-    }
 };
 </script>

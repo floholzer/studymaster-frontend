@@ -1,51 +1,85 @@
-import {createRouter, createWebHistory} from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import Home from '@/views/Home.vue';
+import store from "@/store/index.js";
 
 const routes = [
-    {path: '/', name: 'home', component: HomeView}, // Route für Home-Seite
+    {
+        path: '/',
+        name: 'home',
+        component: Home,
+        meta: { title: 'StudyMaster' },
+    },
+    {
+        path: '/about',
+        name: 'about',
+        component: () => import('../views/About.vue'),
+        meta: { title: 'StudyMaster | About' },
+    },
+    {
+        path: '/contact',
+        name: 'contact',
+        component: () => import('../views/Contact.vue'),
+        meta: { title: 'StudyMaster | Contact' },
+    },
+    {
+        path: '/privacy',
+        name: 'privacy',
+        component: () => import('../views/Privacy.vue'),
+        meta: { title: 'StudyMaster | Privacy' },
+    },
+    {
+        path: '/profile',
+        name: 'profile',
+        component: () => import('../views/Profile.vue'),
+        meta: { title: 'StudyMaster | Profile', requiresAuth: true },
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: () => import('@/components/Login.vue'),
+        meta: { title: 'StudyMaster | Login' },
+    },
+    {
+        path: '/signup',
+        name: 'signup',
+        component: () => import('@/components/Signup.vue'),
+        meta: { title: 'StudyMaster | Signup' },
+    },
+    {
+        path: '/studymaster',
+        name: 'studymaster',
+        component: () => import('@/views/StudyMaster.vue'),
+        meta: { title: 'StudyMaster | StudyMaster', requiresAuth: true },
+    }
 ];
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
-    routes: [
-        {
-            path: '/',
-            name: 'home',
-            component: HomeView,
-            meta: {title: 'StudyMaster'},
-        },
-        {
-            path: '/about',
-            name: 'about',
-            // route level code-splitting
-            // this generates a separate chunk (About.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
-            component: () => import('../views/AboutView.vue'),
-            meta: {title: 'StudyMaster | About'},
-        },
-        {
-            path: '/contact',
-            name: 'contact',
-            component: () => import('../views/Contact.vue'),
-            meta: {title: 'StudyMaster | Contact'},
-        },
-        {
-            path: '/privacy',
-            name: 'privacy',
-            component: () => import('../views/Privacy.vue'),
-            meta: {title: 'StudyMaster | Privacy'},
-        },
-        {
-            path: '/profile',
-            name: 'profile',
-            component: () => import('../views/Profile.vue'),
-            meta: {title: 'StudyMaster | Profile'},
+    routes
+});
+
+// Globaler Navigation Guard
+router.beforeEach((to, from, next) => {
+    // Setze den Dokumenttitel
+    document.title = to.meta?.title ?? 'StudyMaster';
+
+    // Überprüfen, ob die Route eine Authentifizierung erfordert
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (store.getters['isAuthenticated']) {
+            next();
+        } else {
+            next('/'); // Weiterleitung zur Home-Seite, wenn der Benutzer nicht authentifiziert ist
         }
-    ]
-})
+    } else if (to.path === '/login' || to.path === '/signup') {
+        // Überprüfen, ob der Benutzer bereits eingeloggt ist und versucht, auf die Login- oder Signup-Seite zuzugreifen
+        if (store.getters['isAuthenticated']) {
+            next('/profile'); // Weiterleitung zu einer geschützten Seite
+        } else {
+            next(); // Erlaube den Zugriff auf die Login- oder Signup-Seite
+        }
+    } else {
+        next(); // Erlaube den Zugriff auf die Route
+    }
+});
 
-router.beforeEach((to, from) => {
-    document.title = to.meta?.title ?? 'StudyMaster'
-})
-
-export default router
+export default router;

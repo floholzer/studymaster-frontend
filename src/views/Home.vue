@@ -1,9 +1,11 @@
 <template>
-    <div v-if="isLoggedIn">
-        <Tasklist/>
-    </div>
-    <div v-else class="d-flex flex-column align-center justify-center fill-height">
+    <div class="d-flex flex-column align-center justify-center fill-height">
         <v-container class="text-center">
+            <v-row>
+                <v-col>
+                    <v-img src="src/assets/StudyMaster_Logo_big.jpeg" max-height="400" contain></v-img>
+                </v-col>
+            </v-row>
             <v-row>
                 <v-col>
                     <h1>Welcome to StudyMaster</h1>
@@ -12,7 +14,8 @@
             </v-row>
             <v-row>
                 <v-col>
-                    <v-btn rounded="xl" color="#F87A53" variant="elevated" @click="$emit('open-login')" class="my-4"
+                    <v-btn rounded="xl" color="#F87A53" variant="elevated" @click="this.$router.push('/signup')"
+                           class="my-4"
                            size="x-large">
                         Get Started
                     </v-btn>
@@ -24,21 +27,9 @@
 </template>
 
 <script>
-import {defineComponent} from 'vue';
-import Tasklist from '@/components/Tasklist.vue';
-
-export default defineComponent({
+export default {
     name: 'HomeView',
-    components: {
-        Tasklist
-    },
-    props: {
-        isLoggedIn: {
-            type: Boolean,
-            required: true
-        }
-    }
-});
+};
 </script>
 
 <style scoped>

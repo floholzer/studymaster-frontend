@@ -1,55 +1,23 @@
 <template>
     <v-app>
-        <Header :isLoggedIn="isLoggedIn" @open-login="openLoginDialog" @logout="logout"/>
-        <LoginDialog :isOpen="loginDialogOpen" @update:modelValue="loginDialogOpen = $event"
-                     @login-success="handleLoginSuccess"/>
-        <v-main>
-            <router-view :isLoggedIn="isLoggedIn" @open-login="openLoginDialog"/>
-        </v-main>
+        <router-view class="main-content"/>
         <Footer/>
     </v-app>
 </template>
 
 <script>
-import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
-import LoginDialog from "@/components/LoginDialog.vue";
 
 export default {
     name: 'App',
     components: {
-        Header,
-        LoginDialog,
         Footer,
-    },
-    data() {
-        return {
-            loginDialogOpen: false,
-            authToken: null,
-            isLoggedIn: false,
-        };
-    },
-    created() { //check if user is already logged in
-        const token = localStorage.getItem("jwt");
-        if (token) {
-            this.authToken = token;
-            this.isLoggedIn = true;
-        }
-    },
-    methods: {
-        openLoginDialog() {
-            this.loginDialogOpen = true;
-        },
-        handleLoginSuccess(token) {
-            this.authToken = token;
-            this.isLoggedIn = true;
-            console.log('Token received:', token);
-        },
-        logout() {
-            this.authToken = null;
-            this.isLoggedIn = false;
-            localStorage.removeItem("jwt");
-        }
     },
 };
 </script>
+<style scoped>
+.main-content {
+    padding-top: 64px; /* Adjust this value based on the height of your header */
+    padding-bottom: 84px;
+}
+</style>

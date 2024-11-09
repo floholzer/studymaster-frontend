@@ -1,69 +1,87 @@
-<script setup>
-import { ref } from 'vue';
-
-const userProfile = ref({
-    firstname: '',
-    lastname: '',
-    email: '',
-    password: '',
-    passwordConfirmation: ''
-});
-
-const formRef = ref(null);
-
-const saveProfile = () => {
-    if (formRef.value.validate()) {
-        // Handle profile save logic here
-        console.log('Profile saved:', userProfile.value);
-    }
-};
-</script>
-
 <template>
-    <v-container>
-        <v-card>
+    <Header/>
+    <v-container class="d-flex justify-center">
+        <v-card class="pa-5" max-width="500" width="100%">
             <v-card-title>Edit Profile</v-card-title>
             <v-card-text>
                 <v-form ref="formRef">
                     <v-text-field
-                        v-model="userProfile.firstname"
+                        v-model="userData.firstname"
                         label="Firstname"
                         required
                     ></v-text-field>
                     <v-text-field
-                        v-model="userProfile.lastname"
+                        v-model="userData.lastname"
                         label="Lastname"
                         required
                     ></v-text-field>
                     <v-text-field
-                        v-model="userProfile.email"
+                        v-model="userData.username"
+                        label="Username"
+                        required
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="userData.email"
                         label="Email"
                         required
                     ></v-text-field>
                     <v-text-field
-                        v-model="userProfile.password"
+                        v-model="userData.password"
                         label="Password"
-                        type="password"
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="userProfile.passwordConfirmation"
-                        label="Confirm Password"
                         type="password"
                     ></v-text-field>
                 </v-form>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn variant="elevated" color="#8C403A" @click="saveProfile">Save</v-btn>
+                <v-btn variant="elevated" color="#8C403A" @click="updateProfile">Save</v-btn>
             </v-card-actions>
         </v-card>
     </v-container>
 </template>
 
+<script>
+import { mapState } from 'vuex';
+import Header from "@/components/Header.vue";
+
+export default {
+    components: { Header },
+    data() {
+        return {
+            userData: {
+                firstname: '',
+                lastname: '',
+                username: '',
+                email: ''
+            }
+        };
+    },
+    computed: {
+        ...mapState({
+            userStore: (state) => state.user // Zugreifen auf den `user` im Vuex-Store
+        })
+    },
+    mounted() {
+        // Initialisiere `userData`, wenn die Komponente geladen wird
+        if (this.userStore) {
+            this.userData.firstname = this.userStore.firstname || '';
+            this.userData.lastname = this.userStore.lastname || '';
+            this.userData.username = this.userStore.username || '';
+            this.userData.email = this.userStore.email || '';
+        }
+    },
+    methods: {
+        updateProfile() {
+            // TODO: Implementiere die Logik für die Profilaktualisierung
+        }
+    }
+};
+</script>
+
 <style scoped>
 .v-container {
     max-width: 600px;
-    margin: auto;
+    margin-top: 64px;
     padding-top: 20px;
 }
 </style>
