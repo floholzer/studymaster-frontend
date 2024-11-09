@@ -72,6 +72,7 @@ export default {
     },
     methods: {
         updateProfile() {
+            alert('needs to be implemented');
             // TODO: Implementiere die Logik für die Profilaktualisierung
         }
     }

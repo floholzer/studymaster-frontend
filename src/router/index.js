@@ -73,7 +73,7 @@ router.beforeEach((to, from, next) => {
     } else if (to.path === '/login' || to.path === '/signup') {
         // Überprüfen, ob der Benutzer bereits eingeloggt ist und versucht, auf die Login- oder Signup-Seite zuzugreifen
         if (store.getters['isAuthenticated']) {
-            next('/profile'); // Weiterleitung zu einer geschützten Seite
+            next('/studymaster'); // Weiterleitung zu einer geschützten Seite
         } else {
             next(); // Erlaube den Zugriff auf die Login- oder Signup-Seite
         }

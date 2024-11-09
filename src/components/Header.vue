@@ -6,7 +6,7 @@
         <v-spacer></v-spacer>
         <v-menu transition="slide-y-transition" width="200" class="mx-auto">
             <template v-slot:activator="{ props }">
-                <v-btn variant="tonal" icon="mdi-account" v-bind="props"></v-btn>
+                <v-btn class="mr-5" variant="tonal" icon="mdi-menu" v-bind="props"></v-btn>
             </template>
             <v-list>
                 <router-link to="/studymaster" style="text-decoration: none; color: inherit;">
