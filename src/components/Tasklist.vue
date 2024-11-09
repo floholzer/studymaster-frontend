@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="d-flex justify-center align-center fill-height">
+    <v-container fluid class="d-flex justify-center align-center">
         <v-col cols="12" md="6">
             <v-card class="pa-4">
                 <v-card-title class="headline text-center">Taskliste</v-card-title>
@@ -167,12 +167,12 @@ export default {
 </script>
 
 <style scoped>
-.fill-height {
-    height: 100vh;
-}
-
 .task-name {
     font-weight: bold;
+}
+.v-container {
+    margin-top: 64px;
+    margin-bottom: 120px;
 }
 
 .due-date {
