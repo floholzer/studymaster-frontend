@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import Header from "@/components/Header.vue";
 
 export default {
@@ -57,9 +56,9 @@ export default {
         };
     },
     computed: {
-        ...mapState({
-            userStore: (state) => state.user // Zugreifen auf den `user` im Vuex-Store
-        })
+        userStore() {
+            return this.$store.state.user;
+        }
     },
     mounted() {
         // Initialisiere `userData`, wenn die Komponente geladen wird

@@ -47,17 +47,16 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['login']),
         async userLogin() {
             try {
-                await this.login({
+                await this.$store.dispatch('login', {
                     username: this.userData.username,
                     password: this.userData.password
                 });
 
                 this.$router.push('/studymaster');
             } catch (error) {
-                alert(error.message || 'Login fehlgeschlagen. Bitte versuchen Sie es erneut.');
+                alert(error.message || 'Login failed. Please try again.');
             }
         },
     },

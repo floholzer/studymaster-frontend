@@ -67,10 +67,9 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['register']),
         async userSignUp() {
             try {
-                await this.register({
+                await this.$store.dispatch('register', {
                     username: this.userData.username,
                     email: this.userData.email,
                     password: this.userData.password,

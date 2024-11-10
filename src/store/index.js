@@ -96,12 +96,6 @@ const store = new createStore({
             localStorage.removeItem('token');
             delete axios.defaults.headers.common['Authorization']; // Entferne das Auth-Header
         },
-
-        resetUser({ commit }) {
-            commit("SET_TOKEN", null);
-            commit("SET_USER", {});
-            commit("SET_AUTH", false);
-        },
         // Action, um den Store mit gespeicherten Daten beim Start zu initialisieren
         initializeAuth({ commit }) {
             const token = localStorage.getItem('token');

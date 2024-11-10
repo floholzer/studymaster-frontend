@@ -70,7 +70,7 @@ router.beforeEach((to, from, next) => {
         } else {
             next('/'); // Weiterleitung zur Home-Seite, wenn der Benutzer nicht authentifiziert ist
         }
-    } else if (to.path === '/login' || to.path === '/signup') {
+    } else if (to.path === '/login' || to.path === '/signup' || to.path === '/') {
         // Überprüfen, ob der Benutzer bereits eingeloggt ist und versucht, auf die Login- oder Signup-Seite zuzugreifen
         if (store.getters['isAuthenticated']) {
             next('/studymaster'); // Weiterleitung zu einer geschützten Seite
