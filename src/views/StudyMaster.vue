@@ -1,6 +1,8 @@
 <template>
     <Header/>
-    <Tasklist/>
+    <div class="main-content">
+        <Tasklist/>
+    </div>
 </template>
 
 <script>
@@ -18,5 +20,9 @@ export default {
 </script>
 
 <style scoped>
+.main-content {
+    background: linear-gradient(135deg, #FFD3A5 ,#99BFBB);
+    min-height: 100vh;
+}
 
 </style>
