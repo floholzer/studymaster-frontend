@@ -49,6 +49,7 @@
                                 :close-on-content-click="false"
                                 transition="scale-transition"
                                 offset-y
+                                min-width="290px"
                             >
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field
@@ -170,6 +171,7 @@ export default {
 .task-name {
     font-weight: bold;
 }
+
 .v-container {
     margin-top: 64px;
     margin-bottom: 120px;
