@@ -3,9 +3,9 @@ import axios from "axios";
 
 const store = new createStore({
     state: {
-        user: JSON.parse(localStorage.getItem('user')) || null,
-        token: localStorage.getItem('token') || null,
-        isAuthenticated: !!localStorage.getItem('token')
+        user: JSON.parse(sessionStorage.getItem('user')) || null,
+        token: sessionStorage.getItem('token') || null,
+        isAuthenticated: !!sessionStorage.getItem('token')
     },
     getters: {
         getUser: (state) => state.user,
@@ -44,8 +44,8 @@ const store = new createStore({
                     email: "Max.Mustermann@email.com"
                 };
 
-                localStorage.setItem('user', JSON.stringify(user));
-                localStorage.setItem('token', token);
+                sessionStorage.setItem('user', JSON.stringify(user));
+                sessionStorage.setItem('token', token);
 
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Token für zukünftige Requests setzen
 
@@ -75,8 +75,8 @@ const store = new createStore({
                     email: "Max.Mustermann@email.com"
                 };
 
-                localStorage.setItem('user', JSON.stringify(user));
-                localStorage.setItem('token', token);
+                sessionStorage.setItem('user', JSON.stringify(user));
+                sessionStorage.setItem('token', token);
 
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Token setzen
 
@@ -92,14 +92,14 @@ const store = new createStore({
 
         logout({ commit }) {
             commit('CLEAR_AUTH');
-            localStorage.removeItem('user');
-            localStorage.removeItem('token');
+            sessionStorage.removeItem('user');
+            sessionStorage.removeItem('token');
             delete axios.defaults.headers.common['Authorization']; // Entferne das Auth-Header
         },
         // Action, um den Store mit gespeicherten Daten beim Start zu initialisieren
         initializeAuth({ commit }) {
-            const token = localStorage.getItem('token');
-            const user = JSON.parse(localStorage.getItem('user'));
+            const token = sessionStorage.getItem('token');
+            const user = JSON.parse(sessionStorage.getItem('user'));
 
             if (token && user) {
                 commit('SET_USER', user);

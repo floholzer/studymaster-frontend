@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column align-center justify-center fill-height" style="background: linear-gradient(135deg, #FFD3A5 ,#99BFBB;">
-        <v-container class="text-center py-12">
+        <v-container class="text-center">
             <v-row>
                 <v-col cols="12">
                     <v-img src="src/assets/StudyMaster_Logo_big.jpeg" max-height="300" contain></v-img>
