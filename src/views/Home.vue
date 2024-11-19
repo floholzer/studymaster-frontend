@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex flex-column align-center justify-center fill-height" style="background: linear-gradient(135deg, #FFD3A5 ,#99BFBB;">
+    <div class="d-flex flex-column align-center justify-center fill-height" style="background-color: #1F2A3A">
         <v-container class="text-center">
             <v-row>
                 <v-col cols="12">

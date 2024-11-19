@@ -5,12 +5,14 @@ const store = new createStore({
     state: {
         user: JSON.parse(sessionStorage.getItem('user')) || null,
         token: sessionStorage.getItem('token') || null,
-        isAuthenticated: !!sessionStorage.getItem('token')
+        isAuthenticated: !!sessionStorage.getItem('token'),
+        tasks: []
     },
     getters: {
         getUser: (state) => state.user,
         isAuthenticated: (state) => state.isAuthenticated,
         getToken: (state) => state.token,
+        getTasks: (state) => state.tasks
     },
     mutations: {
         SET_USER(state, user) {
@@ -26,7 +28,10 @@ const store = new createStore({
             state.user = null;
             state.token = null;
             state.isAuthenticated = false;
-        }
+        },
+        SET_TASKS(state, tasks) {
+            state.tasks = tasks;
+        },
     },
     actions: {
         async login({ commit }, userData) {
@@ -36,18 +41,20 @@ const store = new createStore({
                     password: userData.password,
                 });
 
+                console.log("Logger: "+JSON.stringify(response.data));
+
                 const token = response.data.jwt;
                 const user = { // Beispielhafte Benutzerdaten TODO: Backend muss User Objekt zurückgeben
-                    firstname: "Max",
-                    lastname: "Mustermann",
+                    firstname: response.data.firstName,
+                    lastname: response.data.lastName,
                     username: userData.username,
-                    email: "Max.Mustermann@email.com"
+                    email: response.data.email
                 };
 
                 sessionStorage.setItem('user', JSON.stringify(user));
                 sessionStorage.setItem('token', token);
 
-                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Token für zukünftige Requests setzen
+                axios.defaults.headers.common['Authorization'] = "Bearer " + token; // Token für zukünftige Requests setzen
 
                 commit('SET_USER', user);
                 commit('SET_TOKEN', token);
@@ -87,6 +94,19 @@ const store = new createStore({
             } catch (error) {
                 console.error('Registrierung fehlgeschlagen:', error);
                 throw new Error('Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.');
+            }
+        },
+
+        async fetchTasks({ commit }) {
+            try {
+                const response = await axios.get('http://localhost:8080/api/tasks/test', {
+                    headers: {
+                        Authorization: "Bearer " + sessionStorage.getItem('token'),
+                    },
+                });
+                commit('SET_TASKS', response.data); // Speichert die abgerufenen Tasks im State
+            } catch (error) {
+                console.error('Fehler beim Abrufen der Aufgaben:', error);
             }
         },
 
