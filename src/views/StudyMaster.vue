@@ -21,7 +21,7 @@ export default {
 
 <style scoped>
 .main-content {
-    background-image: url("../assets/entwurf.jpg");
+    background-image: url("../assets/background.jpg");
     min-height: 100vh;
 }
 </style>
