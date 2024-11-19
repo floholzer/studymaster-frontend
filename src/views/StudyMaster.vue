@@ -21,8 +21,7 @@ export default {
 
 <style scoped>
 .main-content {
-    background: linear-gradient(135deg, #FFD3A5 ,#99BFBB);
+    background-image: url("../assets/entwurf.jpg");
     min-height: 100vh;
 }
-
 </style>
