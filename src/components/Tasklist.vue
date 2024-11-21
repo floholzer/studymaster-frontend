@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="d-flex justify-center align-center">
-    <v-col cols="12" md="8">
+    <v-col cols="12" md="6">
       <v-card class="pa-4">
         <v-card-title class="headline text-center">Taskliste</v-card-title>
         <v-card-text>
@@ -254,6 +254,10 @@ export default {
 </script>
 
 <style scoped>
+.v-container {
+    margin-top: 64px;
+    margin-bottom: 120px;
+}
 .task-name {
   font-weight: bold;
 }
