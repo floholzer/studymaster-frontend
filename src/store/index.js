@@ -44,11 +44,12 @@ const store = new createStore({
                 console.log("Logger: "+JSON.stringify(response.data));
 
                 const token = response.data.jwt;
-                const user = { // Beispielhafte Benutzerdaten TODO: Backend muss User Objekt zurückgeben
-                    firstname: response.data.firstName,
-                    lastname: response.data.lastName,
-                    username: userData.username,
-                    email: response.data.email
+                const user = {
+                    id: response.data.userId ?? null,
+                    firstname: response.data.first_name ?? null,
+                    lastname: response.data.last_name ?? null,
+                    username: response.data.username ?? null,
+                    email: response.data.email ?? null
                 };
 
                 sessionStorage.setItem('user', JSON.stringify(user));
@@ -75,11 +76,12 @@ const store = new createStore({
 
                 // Annahme: Die Antwort enthält einen JWT-Token und Benutzerdaten
                 const token = response.data.jwt;
-                const user = { // Beispielhafte Benutzerdaten TODO: Backend muss User Objekt zurückgeben
-                    firstname: "Max",
-                    lastname: "Mustermann",
-                    username: userData.username,
-                    email: "Max.Mustermann@email.com"
+                const user = {
+                    id: response.data.userId ?? null,
+                    firstname: response.data.first_name ?? null,
+                    lastname: response.data.last_name ?? null,
+                    username: response.data.username ?? null,
+                    email: response.data.email ?? null
                 };
 
                 sessionStorage.setItem('user', JSON.stringify(user));
@@ -89,8 +91,6 @@ const store = new createStore({
 
                 commit('SET_USER', user);
                 commit('SET_TOKEN', token);
-
-                return response.data; // Rückgabe zur weiteren Verwendung in der Komponente
             } catch (error) {
                 console.error('Registrierung fehlgeschlagen:', error);
                 throw new Error('Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.');
@@ -99,12 +99,12 @@ const store = new createStore({
 
         async fetchTasks({ commit }) {
             try {
-                const response = await axios.get('http://localhost:8080/api/tasks/test', {
-                    headers: {
-                        Authorization: "Bearer " + sessionStorage.getItem('token'),
-                    },
-                });
-                commit('SET_TASKS', response.data); // Speichert die abgerufenen Tasks im State
+                const user = JSON.parse(sessionStorage.getItem('user'));
+                const response = await axios.get('http://localhost:8080/api/tasks/'+user.id.toString());
+                if (response.data.length > 0) {
+                    commit('SET_TASKS', response.data); // Speichert die abgerufenen Tasks im State
+                }
+
             } catch (error) {
                 console.error('Fehler beim Abrufen der Aufgaben:', error);
             }
