@@ -13,12 +13,9 @@ defineProps(['subject', 'ects', 'description', 'due_date']);
             <small class="task-ects">{{ ects }} ECTS</small>
             <div>{{ description }}</div>
         </div>
-        <div class="d-flex justify-space-between mt-2">
+        <div class="d-flex justify-end mt-2">
             <v-btn small icon color="blue" @click="console.log('Task edit clicked.')">
                 <v-icon>mdi-pencil</v-icon>
-            </v-btn>
-            <v-btn small icon color="red" @click="console.log('Task removed clicked.')">
-                <v-icon>mdi-delete</v-icon>
             </v-btn>
         </div>
     </v-card>
@@ -27,9 +24,20 @@ defineProps(['subject', 'ects', 'description', 'due_date']);
 <style scoped>
 .task-name {
     font-weight: bold;
+    font-size: 1.5rem;
 }
 .task-ects {
     color: #4caf50;
     font-weight: 500;
+    font-size: 1rem;
+}
+.task-card {
+    width: 150px; /* 60px breit */
+    height: 200px; /* 100px hoch */
+    border-radius: 8px;
+    background-color: #fce5cd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 0.8rem;
 }
 </style>
