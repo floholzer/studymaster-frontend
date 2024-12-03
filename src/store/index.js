@@ -28,6 +28,7 @@ const store = new createStore({
             state.user = null;
             state.token = null;
             state.isAuthenticated = false;
+            state.tasks = [];
         },
         SET_TASKS(state, tasks) {
             state.tasks = tasks;
