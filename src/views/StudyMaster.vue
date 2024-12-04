@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Tasklist from "@/components/Tasklist.vue";
+import Tasklist from "@/components/Tasks/Tasklist.vue";
 import Header from "@/components/Header.vue";
 
 export default {
