@@ -1,11 +1,11 @@
 <script setup>
-defineProps(['completedEcts']);
+defineProps(['progressPercentage', 'progressAbsolute']);
 </script>
 
 <template class="progressbar">
-    <v-progress-linear color="green" height="20">
+    <v-progress-linear :model-value="progressPercentage" color="green" height="20">
         <template v-slot:default>
-            <span>{{ (completedEcts / 30) * 100 }} / 30 ECTS</span>
+            <span>{{ progressAbsolute}} / 30 ECTS</span>
         </template>
     </v-progress-linear>
 </template>

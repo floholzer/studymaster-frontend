@@ -5,7 +5,10 @@
                 <h1>STUDYMASTER</h1>
                 <v-divider class="mb-4"></v-divider>
                 <!-- Fortschrittsanzeige für ECTS-Punkte -->
-                <ProgressBar :completedEcts="0"/>
+                <ProgressBar
+                    :progressAbsolute="progressAbsolute"
+                    :progress-percentage="progressPercentage"
+                />
 
                 <v-row class="mt-4">
                     <v-col>
@@ -32,17 +35,19 @@
                 <v-row>
                     <!-- Task-Grid -->
                     <v-divider class="mt-2"></v-divider>
-                    <i style="color: gray;" v-if="tasks.length===0">No tasks created yet...</i>
+                    <i style="color: gray;" v-if="openTasks.length===0">No tasks created yet...</i>
 
                     <div class="task-grid mx-6 my-6">
                         <Task
-                            v-for="(task) in tasks"
-                            :task-id="task.id"
+                            v-for="(task) in openTasks"
+                            :key="task.id"
+                            :taskId="task.id"
                             :subject="task.title"
                             :ects="task.ects"
                             :description="task.description"
                             :due_date="task.dueDate"
                             :onDelete="deleteTask"
+                            :onDone="completeTask"
                         />
                     </div>
                 </v-row>
@@ -59,31 +64,53 @@ import Badge from "@/components/Tasks/Badge.vue";
 
 export default {
     name: "Tasklist",
-    components: {Badge, BigGreen, ProgressBar, Task},
+    components: {
+        Badge,
+        BigGreen,
+        ProgressBar,
+        Task
+    },
     beforeMount() { // Lifecycle-Hook: Wird vor dem Rendern ausgeführt
         this.fetchTasks();
-    },
-    updated() {
-        this.fetchTasks();
+        this.getProgress(); // TODO add progress function to API
     },
     computed: {
-        tasks() {
-            return this.$store.state.tasks;
+        openTasks() {
+            const tasks = this.$store.getters.getTasks;
+            return tasks.filter(task => {
+                // Replace this condition with your actual condition
+                return task.status !== "completed";
+            });
+        },
+        progressAbsolute() {
+            return (this.$store.getters.getProgress/100)*30;
+        },
+        progressPercentage() {
+            return this.$store.getters.getProgress;
         },
     },
     methods: {
+        async getProgress() {
+            await this.$store.dispatch('getProgress');
+        },
         async fetchTasks() {
             await this.$store.dispatch('fetchTasks');
         },
-
         async addTask() {
             await this.$store.dispatch('addTask', {
-                user_id: this.$store.state.user.id,
+                userId: this.$store.getters.getUser.id,
                 title: "New Task",
                 ects: 5,
                 description: "Description",
                 dueDate: "2024-12-31",
             });
+        },
+        async completeTask(taskId, ects) {
+            await this.$store.dispatch('completeTask', { taskId, ects });
+            await this.fetchTasks();
+        },
+        async updateTask(taskId) {
+            await this.$store.dispatch('updateTask', taskId);
         },
         async deleteTask(taskId) {
             await this.$store.dispatch('deleteTask', taskId);

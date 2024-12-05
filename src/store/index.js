@@ -8,13 +8,15 @@ const store = new createStore({
         user: JSON.parse(sessionStorage.getItem('user')) || null,
         token: sessionStorage.getItem('token') || null,
         isAuthenticated: !!sessionStorage.getItem('token'),
-        tasks: []
+        tasks: [],
+        progress: 0
     },
     getters: {
         getUser: (state) => state.user,
         isAuthenticated: (state) => state.isAuthenticated,
         getToken: (state) => state.token,
-        getTasks: (state) => state.tasks
+        getTasks: (state) => state.tasks,
+        getProgress: (state) => state.progress
     },
     mutations: {
         SET_USER(state, user) {
@@ -35,6 +37,9 @@ const store = new createStore({
         SET_TASKS(state, tasks) {
             state.tasks = tasks;
         },
+        SET_PROGRESS(state, progress) {
+            state.progress = progress;
+        }
     },
     actions: {
         async login({commit}, userData) {
@@ -100,7 +105,7 @@ const store = new createStore({
 
         async fetchTasks({commit}) {
             try {
-                const user = JSON.parse(sessionStorage.getItem('user'));
+                const user = store.getters.getUser;
                 const response = await axios.get(api_url+'/api/tasks/' + user.id.toString());
                 if (response.data.length > 0) {
                     commit('SET_TASKS', response.data);
@@ -137,6 +142,50 @@ const store = new createStore({
                 }
             } catch (error) {
                 console.error('Error deleting task:', error);
+            }
+        },
+
+        async updateTask({commit}, task) {
+            if (!task) {
+                console.error('Task is empty');
+                return;
+            }
+            try {
+                const response = await axios.put(api_url+'/api/tasks/' + task.id, task);
+                if (response.status === 200) {
+                    commit('SET_TASKS', this.state.tasks.map(t => t.id === task.id ? task : t));
+                }
+            } catch (error) {
+                console.error('Error updating task:', error);
+            }
+        },
+
+        async completeTask({commit}, { taskId, ects }) {
+            if(!taskId) {
+                console.error('Task ID is empty');
+                return;
+            }
+            if (ects < 0) {
+                console.error('ECTS must be greater than 0');
+                return;
+            }
+            try {
+                await axios.post(api_url+'/api/tasks/'+taskId+"/complete", {
+                    ects: ects
+                });
+            } catch (error) {
+                console.error('Error completing task:', error);
+            }
+        },
+
+        async getProgress({commit}) {
+            try {
+                const user = store.getters.getUser;
+                const response = await axios.get(api_url+'/api/progress/' + user.id.toString());
+                commit('SET_PROGRESS', response.data ? response.data : 0);
+
+            } catch (error) {
+                console.error('Error fetching progress:', error);
             }
         },
 
