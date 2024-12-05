@@ -108,6 +108,7 @@ export default {
         async completeTask(taskId, ects) {
             await this.$store.dispatch('completeTask', { taskId, ects });
             await this.fetchTasks();
+            await this.getProgress();
         },
         async updateTask(taskId) {
             await this.$store.dispatch('updateTask', taskId);
