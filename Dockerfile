@@ -10,8 +10,13 @@ RUN npm install
 
 # Restlichen Quellcode kopieren und die Anwendung bauen
 COPY . .
-RUN npm run build
 
+# Argumente und Umgebungsvariablen setzen
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
+# Build der App
+RUN npm run build
 
 
 #### Stage 2: Serve the application with Nginx ####
