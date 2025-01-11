@@ -21,10 +21,6 @@ FROM nginx:alpine AS PRODUCTION_IMAGE
 # Kopiere die gebauten Dateien aus dem vorherigen Stage
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy and run environment script
-COPY env.sh /docker-entrypoint.d/env.sh
-RUN chmod +x /docker-entrypoint.d/env.sh
-
 # Port 80 freigeben
 EXPOSE 80
 
