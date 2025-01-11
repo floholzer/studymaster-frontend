@@ -1,7 +1,7 @@
 import {createStore} from 'vuex'
 import axios from "axios";
 
-const api_url = 'http://localhost:8080';
+const api_url = process.env.VUE_APP_API_URL ?? 'http://localhost:8080'; // API-URL aus der .env-Datei
 
 const store = new createStore({
     state: {
