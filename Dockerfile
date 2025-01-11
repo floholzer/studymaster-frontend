@@ -16,10 +16,10 @@ RUN npm run build
 
 
 #### Stage 2: Serve the application with Nginx ####
-FROM nginx:alpine AS PRODUCTION_IMAGE
+FROM nginx:alpine
 
 # Kopiere die gebauten Dateien aus dem vorherigen Stage
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=BUILD_IMAGE /app/dist /usr/share/nginx/html
 
 # Port 80 freigeben
 EXPOSE 80
