@@ -1,5 +1,5 @@
 #### Stage 1: Build the Vue.js application ####
-FROM node:16-alpine AS build
+FROM node:16-alpine AS BUILD_IMAGE
 
 # Arbeitsverzeichnis im Container festlegen
 WORKDIR /app
@@ -11,19 +11,19 @@ RUN npm install
 # Restlichen Quellcode kopieren und die Anwendung bauen
 COPY . .
 
-# Argumente und Umgebungsvariablen setzen
-ARG VITE_API_URL
-ENV VITE_API_URL=$VITE_API_URL
-
 # Build der App
 RUN npm run build
 
 
 #### Stage 2: Serve the application with Nginx ####
-FROM nginx:alpine
+FROM nginx:alpine AS PRODUCTION_IMAGE
 
 # Kopiere die gebauten Dateien aus dem vorherigen Stage
 COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copy and run environment script
+COPY env.sh /docker-entrypoint.d/env.sh
+RUN chmod +x /docker-entrypoint.d/env.sh
 
 # Port 80 freigeben
 EXPOSE 80
