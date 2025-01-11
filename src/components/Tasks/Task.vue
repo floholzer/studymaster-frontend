@@ -31,7 +31,6 @@ defineProps([
             Done
             <v-icon right>mdi-check</v-icon>
         </v-btn>
-
     </v-card>
 </template>
 

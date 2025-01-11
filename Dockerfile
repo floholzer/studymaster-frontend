@@ -5,7 +5,7 @@ FROM node:16-alpine AS build
 WORKDIR /app
 
 # Abhängigkeiten kopieren und installieren
-COPY package.json package-lock.json ./
+COPY package*.json ./
 RUN npm install
 
 # Restlichen Quellcode kopieren und die Anwendung bauen
@@ -15,7 +15,7 @@ RUN npm run build
 
 
 #### Stage 2: Serve the application with Nginx ####
-FROM nginx:stable-alpine AS stable
+FROM nginx:alpine
 
 # Kopiere die gebauten Dateien aus dem vorherigen Stage
 COPY --from=build /app/dist /usr/share/nginx/html

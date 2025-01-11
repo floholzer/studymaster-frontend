@@ -42,7 +42,7 @@ const routes = [
     {
         path: '/signup',
         name: 'signup',
-        component: () => import('@/components/Signup.vue'),
+        component: () => import('@/components/SignUp.vue'),
         meta: { title: 'StudyMaster | Signup' },
     },
     {
