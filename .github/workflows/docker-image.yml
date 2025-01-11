@@ -21,7 +21,7 @@ jobs:
       
     # Build the Docker image
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag studymaster-frontend:latest
+      run: docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/studymaster-frontend:latest
       
     # Push the Docker image to Docker Hub
     - name: Push Docker image
