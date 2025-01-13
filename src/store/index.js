@@ -106,7 +106,7 @@ const store = new createStore({
         async fetchTasks({commit}) {
             try {
                 const user = store.getters.getUser;
-                const response = await axios.get(api_url+'/api/tasks/' + user.id.toString());
+                const response = await axios.get(api_url+'/tasks/' + user.id.toString());
                 if (response.data.length > 0) {
                     commit('SET_TASKS', response.data);
                 }
@@ -122,7 +122,7 @@ const store = new createStore({
                 return;
             }
             try {
-                const response = await axios.post(api_url+'/api/tasks', task);
+                const response = await axios.post(api_url+'/tasks', task);
                 if (response.status === 200) {
                     commit('SET_TASKS', [...this.state.tasks, response.data]);
                 }
@@ -136,7 +136,7 @@ const store = new createStore({
                 return;
             }
             try {
-                const response = await axios.delete(api_url+'/api/tasks/' + taskId);
+                const response = await axios.delete(api_url+'/tasks/' + taskId);
                 if (response.status === 200) {
                     commit('SET_TASKS', this.state.tasks.filter(task => task.id !== taskId));
                 }
@@ -151,7 +151,7 @@ const store = new createStore({
                 return;
             }
             try {
-                const response = await axios.put(api_url+'/api/tasks/' + task.id, task);
+                const response = await axios.put(api_url+'/tasks/' + task.id, task);
                 if (response.status === 200) {
                     commit('SET_TASKS', this.state.tasks.map(t => t.id === task.id ? task : t));
                 }
@@ -170,7 +170,7 @@ const store = new createStore({
                 return;
             }
             try {
-                await axios.post(api_url+'/api/tasks/'+taskId+"/complete", {
+                await axios.post(api_url+'/tasks/'+taskId+"/complete", {
                     ects: ects
                 });
             } catch (error) {
@@ -181,7 +181,7 @@ const store = new createStore({
         async getProgress({commit}) {
             try {
                 const user = store.getters.getUser;
-                const response = await axios.get(api_url+'/api/progress/' + user.id.toString());
+                const response = await axios.get(api_url+'/progress/' + user.id.toString());
                 commit('SET_PROGRESS', response.data ? response.data : 0);
 
             } catch (error) {
