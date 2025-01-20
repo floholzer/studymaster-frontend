@@ -23,7 +23,9 @@ const store = new createStore({
         token: sessionStorage.getItem('token') || null,
         isAuthenticated: !!sessionStorage.getItem('token'),
         tasks: [],
-        progress: 0
+        progress: 0,
+        semester: {},
+        subjects: [],
     },
     getters: {
         getUser: (state) => state.user,

@@ -1,19 +1,29 @@
 <template>
     <Header/>
     <div class="main-content">
-        <Tasklist/>
+        <AddSemester v-if="showAddSemesterDialog()"/>
+        <Tasklist v-else/>
     </div>
 </template>
 
 <script>
 import Tasklist from "@/components/Tasks/Tasklist.vue";
 import Header from "@/components/Header.vue";
+import AddSemester from "@/components/Dialogs/AddSemester.vue";
+import Task from "@/components/Tasks/Task.vue";
 
 export default {
     name: 'StudyMaster',
     components: {
+        Task,
         Header,
-        Tasklist
+        Tasklist,
+        AddSemester,
+    },
+    methods: {
+        showAddSemesterDialog() {
+            return true;
+        },
     },
 };
 
