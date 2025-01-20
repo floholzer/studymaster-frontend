@@ -68,8 +68,8 @@ const store = new createStore({
                 const token = response.data.jwt;
                 const user = {
                     id: response.data.userId ?? null,
-                    firstname: response.data.firstName ?? null,
-                    lastname: response.data.lastName ?? null,
+                    first_name: response.data.firstName ?? null,
+                    last_name: response.data.lastName ?? null,
                     username: response.data.username ?? null,
                     email: response.data.email ?? null
                 };
@@ -135,6 +135,17 @@ const store = new createStore({
                         message: error.response?.data?.message || 'Registration failed. Please try again.',
                     };
                 }
+            }
+        },
+
+        async updateUser({commit}, userData) {
+            try {
+                const response = await axios.put(api_url+'/users/' + userData.id, userData);
+                if (response.status === 200) {
+                    commit('SET_USER', response.data);
+                }
+            } catch (error) {
+                handleApiError(this, error);
             }
         },
 

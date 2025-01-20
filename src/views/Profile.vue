@@ -26,11 +26,6 @@
                             label="Email"
                             required
                         ></v-text-field>
-                        <v-text-field
-                            v-model="userData.password"
-                            label="Password"
-                            type="password"
-                        ></v-text-field>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
@@ -65,16 +60,34 @@ export default {
     mounted() {
         // Initialisiere `userData`, wenn die Komponente geladen wird
         if (this.userStore) {
-            this.userData.firstname = this.userStore.firstname || '';
-            this.userData.lastname = this.userStore.lastname || '';
+            this.userData.firstname = this.userStore.first_name || '';
+            this.userData.lastname = this.userStore.last_name || '';
             this.userData.username = this.userStore.username || '';
             this.userData.email = this.userStore.email || '';
         }
     },
     methods: {
         updateProfile() {
-            alert('needs to be implemented');
-            // TODO: Implementiere die Logik für die Profilaktualisierung
+            // Validiere Formular
+            if (!this.$refs.formRef.validate()) {
+                return;
+            } else {
+                const new_user = {
+                    id: this.userStore.id,
+                    first_name: this.userData.firstname,
+                    last_name: this.userData.lastname,
+                    username: this.userData.username,
+                    email: this.userData.email
+                };
+
+                // Aktualisiere Benutzerdaten
+                this.$store.dispatch('updateUser', new_user);
+
+                // Navigiere zurück zur Profilseite
+                this.$router.push('/profile');
+            }
+
+
         }
     }
 };
