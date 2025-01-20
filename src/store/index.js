@@ -24,7 +24,7 @@ const store = new createStore({
         isAuthenticated: !!sessionStorage.getItem('token'),
         tasks: [],
         progress: 0,
-        semester: {},
+        semesters: [],
         subjects: [],
     },
     getters: {
@@ -32,7 +32,9 @@ const store = new createStore({
         isAuthenticated: (state) => state.isAuthenticated,
         getToken: (state) => state.token,
         getTasks: (state) => state.tasks,
-        getProgress: (state) => state.progress
+        getProgress: (state) => state.progress,
+        getSemesters: (state) => state.semesters,
+        getSubjects: (state) => state.subjects,
     },
     mutations: {
         SET_USER(state, user) {
@@ -55,36 +57,50 @@ const store = new createStore({
         },
         SET_PROGRESS(state, progress) {
             state.progress = progress;
-        }
+        },
+        SET_SEMESTERS(state, semesters) {
+            state.semesters = semesters;
+        },
+        SET_SUBJECTS(state, subjects) {
+            state.subjects = subjects;
+        },
     },
     actions: {
-        async login({commit}, userData) {
+        async login({commit, dispatch}, userData) {
             try {
                 const response = await axios.post(api_url + '/auth/login', {
                     username: userData.username,
                     password: userData.password,
                 });
 
-                console.log("Logger: " + JSON.stringify(response.data));
+                if (response.status === 200) {
+                    console.log("Logger: " + JSON.stringify(response.data));
 
-                const token = response.data.jwt;
-                const user = {
-                    id: response.data.userId ?? null,
-                    first_name: response.data.firstName ?? null,
-                    last_name: response.data.lastName ?? null,
-                    username: response.data.username ?? null,
-                    email: response.data.email ?? null
-                };
+                    const token = response.data.jwt;
+                    const user = {
+                        id: response.data.userId ?? null,
+                        first_name: response.data.firstName ?? null,
+                        last_name: response.data.lastName ?? null,
+                        username: response.data.username ?? null,
+                        email: response.data.email ?? null
+                    };
 
-                sessionStorage.setItem('user', JSON.stringify(user));
-                sessionStorage.setItem('token', token);
+                    sessionStorage.setItem('user', JSON.stringify(user));
+                    sessionStorage.setItem('token', token);
 
-                axios.defaults.headers.common['Authorization'] = "Bearer " + token; // Token für zukünftige Requests setzen
+                    axios.defaults.headers.common['Authorization'] = "Bearer " + token; // Token für zukünftige Requests setzen
 
-                commit('SET_USER', user);
-                commit('SET_TOKEN', token);
+                    commit('SET_USER', user);
+                    commit('SET_TOKEN', token);
 
-                return { success: true };
+                    await dispatch('getSemesters');
+                    await dispatch('fetchTasks');
+                    await dispatch('getProgress');
+
+
+                    return { success: true };
+                }
+
             } catch (error) {
                 console.error("Login error:", error.response?.data?.message || error.message);
                 return {
@@ -145,6 +161,75 @@ const store = new createStore({
                 const response = await axios.put(api_url+'/users/' + userData.id, userData);
                 if (response.status === 200) {
                     commit('SET_USER', response.data);
+                }
+            } catch (error) {
+                handleApiError(this, error);
+            }
+        },
+
+        async getSemesters({commit}) {
+            try {
+                const user = store.getters.getUser;
+                const response = await axios.get(api_url+'/semesters/' + user.id.toString());
+                commit('SET_SEMESTERS', response.data);
+
+            } catch (error) {
+                handleApiError(this, error);
+            }
+        },
+
+        async addSemester({commit}, semester) {
+            if (!semester) {
+                console.error('Semester is empty');
+                return;
+            }
+            /*
+            Semester-Objekt:
+            {
+                id: 1,
+                userId: 1,
+                name: "WS 2021/22",
+                ects: 30,
+                createdAt: "2022-03-31"
+             */
+            try {
+                const response = await axios.post(api_url+'/semesters', semester);
+                if (response.status === 200) {
+                    commit('SET_SEMESTERS', [...this.state.semesters, response.data]);
+                }
+            } catch (error) {
+                handleApiError(this, error);
+            }
+        },
+
+        async getSubjects({commit}, semesterId) {
+            try {
+                const response = await axios.get(api_url+'/subjects/' + semesterId.toString());
+                commit('SET_SUBJECTS', response.data);
+
+            } catch (error) {
+                handleApiError(this, error);
+            }
+        },
+
+        async addSubject({commit}, subject) {
+            if (!subject) {
+                console.error('Subject is empty');
+                return;
+            }
+            /* Semester-Objekt:
+            {
+                id: 1,
+                semester_id: 1,
+                name: "CLCO",
+                ects: 30,
+                created_at: "2022-03-31",
+                user_id: 1
+            */
+            try {
+                const response = await axios.post(api_url+'/subjects', subject);
+                if (response.status === 200) {
+                    commit('SET_SUBJECTS', [...this.state.subjects, response.data]);
                 }
             } catch (error) {
                 handleApiError(this, error);

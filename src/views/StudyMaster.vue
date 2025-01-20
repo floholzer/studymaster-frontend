@@ -22,7 +22,7 @@ export default {
     },
     methods: {
         showAddSemesterDialog() {
-            return true;
+            return false;
         },
     },
 };

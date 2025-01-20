@@ -2,7 +2,7 @@
     <v-container fluid class="d-flex justify-center align-center">
         <v-col cols="12" md="6">
             <v-card class="main pa-4">
-                <h1>STUDYMASTER</h1>
+                <h1>{{ semester.name }}</h1>
                 <v-divider class="mb-4"></v-divider>
                 <!-- Fortschrittsanzeige für ECTS-Punkte -->
                 <ProgressBar
@@ -10,49 +10,52 @@
                     :progress-percentage="progressPercentage"
                 />
 
-                <v-row class="mt-4">
-                    <v-col>
-                        <BigGreen @click="addTask" text="ADD TASK"/>
-                    </v-col>
-                    <v-divider class="mr-4" vertical></v-divider>
-                    <v-col>
-                        <v-row>
-                            <Badge
-                                BadgeTitle="Badge1"
-                                BadgeDescription="This is the Badge description."
-                            />
-                            <Badge
-                                BadgeTitle="Badge2"
-                                BadgeDescription="This is the Badge description."
-                            />
-                            <Badge
-                                BadgeTitle="Badge3"
-                                BadgeDescription="This is the Badge description."
-                            />
-                        </v-row>
-                    </v-col>
-                </v-row>
+                <!-- Fächer anzeigen -->
                 <v-row>
-                    <!-- Task-Grid -->
-                    <v-divider class="mt-2"></v-divider>
-                    <i style="color: gray;" v-if="openTasks.length===0">No tasks created yet...</i>
-
-                    <div class="task-grid mx-6 my-6">
-                        <Task
-                            v-for="(task) in openTasks"
-                            :key="task.id"
-                            :taskId="task.id"
-                            :subject="task.title"
-                            :ects="task.ects"
-                            :description="task.description"
-                            :due_date="task.dueDate"
-                            :onDelete="deleteTask"
-                            :onDone="completeTask"
-                        />
-                    </div>
+                    <v-col
+                        v-for="(subject, index) in subjects"
+                        :key="index"
+                        class="mb-4"
+                    >
+                        <v-card>
+                            <v-card-title>
+                                {{ subject.name }} ({{ subject.ects }} ECTS)
+                            </v-card-title>
+                            <v-card-text>
+                                <v-btn small color="primary" @click="openTaskDialog(subject)">
+                                    Add Task
+                                </v-btn>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
                 </v-row>
+
+                <!-- Task-Grid -->
+                <v-divider class="mt-2"></v-divider>
+                <i style="color: gray;" v-if="openTasks.length===0">No tasks created yet...</i>
+
+                <div class="task-grid mx-6 my-6">
+                    <Task
+                        v-for="(task) in openTasks"
+                        :key="task.id"
+                        :taskId="task.id"
+                        :subject="task.title"
+                        :ects="task.ects"
+                        :description="task.description"
+                        :due_date="task.dueDate"
+                        :onDelete="deleteTask"
+                        :onDone="completeTask"
+                    />
+                </div>
             </v-card>
         </v-col>
+        <!-- Task Dialog -->
+        <AddTask
+            v-if="showTaskDialog"
+            :subject="selectedSubject"
+            @close="closeTaskDialog"
+            @save="addTask"
+        />
     </v-container>
 </template>
 
@@ -61,6 +64,7 @@ import Task from "@/components/Tasks/Task.vue";
 import ProgressBar from "@/components/Tasks/ProgressBar.vue";
 import BigGreen from "@/components/Buttons/BigGreen.vue";
 import Badge from "@/components/Tasks/Badge.vue";
+import AddTask from "@/components/Dialogs/AddTask.vue";
 
 export default {
     name: "Tasklist",
@@ -68,19 +72,39 @@ export default {
         Badge,
         BigGreen,
         ProgressBar,
-        Task
+        Task,
+        AddTask
     },
-    beforeMount() { // Lifecycle-Hook: Wird vor dem Rendern ausgeführt
-        this.fetchTasks();
-        this.getProgress(); // TODO add progress function to API
+    data() {
+        return {
+            showTaskDialog: false,
+            selectedSubject: null,
+            semester: {
+                id: null,
+                name: 'Failed to load semester',
+                ects: 99,
+                created_at: null,
+            },
+            subjects: [],
+        };
+    },
+    async beforeMount() {
+      await this.$store.dispatch('fetchTasks');
+      await this.$store.dispatch('getProgress');
+      await this.$store.dispatch('getSemesters');
+      this.semester = this.semesterStore[0];
+      await this.$store.dispatch('getSubjects', this.semester.id);
+      this.subjects = this.$store.getters.getSubjects;
     },
     computed: {
         openTasks() {
             const tasks = this.$store.getters.getTasks;
             return tasks.filter(task => {
-                // Replace this condition with your actual condition
                 return task.status !== "completed";
             });
+        },
+        semesterStore() {
+            return this.$store.state.semesters;
         },
         progressAbsolute() {
             return (this.$store.getters.getProgress/100)*30;
@@ -90,20 +114,23 @@ export default {
         },
     },
     methods: {
-        async getProgress() {
-            await this.$store.dispatch('getProgress');
+        openTaskDialog(subject) {
+            this.selectedSubject = subject;
+            this.showTaskDialog = true;
         },
-        async fetchTasks() {
-            await this.$store.dispatch('fetchTasks');
+        closeTaskDialog() {
+            this.showTaskDialog = false;
+            this.selectedSubject = null;
         },
-        async addTask() {
-            await this.$store.dispatch('addTask', {
+        async addTask(taskData) {
+            const newTask = {
                 userId: this.$store.getters.getUser.id,
-                title: "New Task",
-                ects: 5,
-                description: "Description",
-                dueDate: "2024-12-31",
-            });
+                ...taskData,
+                subjectId: this.selectedSubject.id,
+            };
+
+            await this.$store.dispatch('addTask', newTask);
+            this.closeTaskDialog();
         },
         async completeTask(taskId, ects) {
             await this.$store.dispatch('completeTask', { taskId, ects });

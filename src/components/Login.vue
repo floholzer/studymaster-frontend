@@ -73,12 +73,12 @@ export default {
                 password: this.userData.password,
             });
 
-            if (!result.success) {
-                this.errorMessage = result.message; // Fehlernachricht setzen
-                this.userData.password = ""; // Passwort zurücksetzen
-            } else {
+            if (result.success) {
                 this.errorMessage = "";
                 this.$router.push('/studymaster');
+            } else {
+                this.errorMessage = result.message; // Fehlernachricht setzen
+                this.userData.password = ""; // Passwort zurücksetzen
             }
         },
     },
