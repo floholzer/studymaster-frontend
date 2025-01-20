@@ -68,8 +68,8 @@ const store = new createStore({
                 const token = response.data.jwt;
                 const user = {
                     id: response.data.userId ?? null,
-                    firstname: response.data.first_name ?? null,
-                    lastname: response.data.last_name ?? null,
+                    firstname: response.data.firstName ?? null,
+                    lastname: response.data.lastName ?? null,
                     username: response.data.username ?? null,
                     email: response.data.email ?? null
                 };
@@ -109,8 +109,9 @@ const store = new createStore({
                         email: userData.email
                     });
 
+                    // Login after successful registration
                     if (response.status === 200) {
-                        // Nach erfolgreicher Registrierung den Login durchführen
+
                         const loginResult = await dispatch("login", {
                             username: userData.username,
                             password: userData.password,
@@ -125,26 +126,6 @@ const store = new createStore({
                             };
                         }
                     }
-
-                    /*
-                    // Annahme: Die Antwort enthält einen JWT-Token und Benutzerdaten
-                    const token = response.data.jwt;
-                    const user = {
-                        id: response.data.userId ?? null,
-                        firstname: response.data.first_name ?? null,
-                        lastname: response.data.last_name ?? null,
-                        username: response.data.username ?? null,
-                        email: response.data.email ?? null
-                    };
-
-                    sessionStorage.setItem('user', JSON.stringify(user));
-                    sessionStorage.setItem('token', token);
-
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Token setzen
-
-                    commit('SET_USER', user);
-                    commit('SET_TOKEN', token);
-                    */
 
                     return { success: true };
                 } catch (error) {
