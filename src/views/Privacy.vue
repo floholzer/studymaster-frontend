@@ -1,6 +1,6 @@
 <template>
-    <div style="background: linear-gradient(135deg, #FFD3A5 ,#99BFBB);">
-        <v-container class="privacy-page py-10">
+    <div class="privacy-page" style="background: linear-gradient(135deg, #FFD3A5 ,#99BFBB);">
+        <v-container class="py-10">
             <v-row justify="center">
                 <v-col cols="12" md="8">
                     <v-card elevation="8" class="pa-6">
@@ -59,7 +59,7 @@ export default defineComponent({
 
 <style scoped>
 .privacy-page {
-    min-height: 100vh;
+    min-height: calc(98% - 50px); /* Berechnung: Bildschirmhöhe minus Footer */
 }
 
 .v-card {

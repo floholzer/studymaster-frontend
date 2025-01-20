@@ -17,7 +17,7 @@ export default {
 </script>
 <style scoped>
 .main-content {
-    padding-top: 64px; /* Adjust this value based on the height of your header */
+    padding-top: 64px;
     padding-bottom: 84px;
 }
 </style>

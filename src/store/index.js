@@ -1,7 +1,21 @@
 import {createStore} from 'vuex'
-import axios from "axios";
+import axios from 'axios'
 
-const api_url = 'http://localhost:8080';
+const api_url = 'http://localhost:8081';
+
+function handleApiError(store, error) {
+    if (error.response && error.response.status === 401) {
+        // Session beenden, wenn ein 401-Fehler auftritt
+        store.dispatch('logout');
+        // Optional: Benutzer auf die Login-Seite weiterleiten
+        if (window.location.pathname !== '/login') {
+            window.location.href = '/login';
+        }
+    } else {
+        // Fehler an die aufrufende Funktion weiterreichen
+        throw error;
+    }
+}
 
 const store = new createStore({
     state: {
@@ -44,7 +58,7 @@ const store = new createStore({
     actions: {
         async login({commit}, userData) {
             try {
-                const response = await axios.post(api_url+'/auth/login', {
+                const response = await axios.post(api_url + '/auth/login', {
                     username: userData.username,
                     password: userData.password,
                 });
@@ -67,39 +81,60 @@ const store = new createStore({
 
                 commit('SET_USER', user);
                 commit('SET_TOKEN', token);
+
+                return { success: true };
             } catch (error) {
-                console.error('Error Login:', error);
+                console.error("Login error:", error.response?.data?.message || error.message);
+                return {
+                    success: false,
+                    message: error.response?.data?.message || 'Login failed. Please try again.',
+                };
             }
         },
 
         async register({commit}, userData) {
-            try {
-                // POST-Anfrage an das Registrierungs-Endpoint
-                const response = await axios.post(api_url+'/users/register', {
-                    username: userData.username,
-                    password: userData.password,
-                    email: userData.email
-                });
-
-                // Annahme: Die Antwort enthält einen JWT-Token und Benutzerdaten
-                const token = response.data.jwt;
-                const user = {
-                    id: response.data.userId ?? null,
-                    firstname: response.data.first_name ?? null,
-                    lastname: response.data.last_name ?? null,
-                    username: response.data.username ?? null,
-                    email: response.data.email ?? null
+            if (userData.username.length <= 0 || userData.password.length <= 0 || userData.email.length <= 0 || userData.firstname.length <= 0 || userData.lastname.length <= 0) {
+                return {
+                    success: false,
+                    message: 'Please fill out all fields.'
                 };
+            } else {
+                try {
+                    // POST-Anfrage an das Registrierungs-Endpoint
+                    const response = await axios.post(api_url+'/users/register', {
+                        username: userData.username,
+                        password: userData.password,
+                        first_name: userData.firstname,
+                        last_name: userData.lastname,
+                        email: userData.email
+                    });
 
-                sessionStorage.setItem('user', JSON.stringify(user));
-                sessionStorage.setItem('token', token);
+                    // Annahme: Die Antwort enthält einen JWT-Token und Benutzerdaten
+                    const token = response.data.jwt;
+                    const user = {
+                        id: response.data.userId ?? null,
+                        firstname: response.data.first_name ?? null,
+                        lastname: response.data.last_name ?? null,
+                        username: response.data.username ?? null,
+                        email: response.data.email ?? null
+                    };
 
-                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Token setzen
+                    sessionStorage.setItem('user', JSON.stringify(user));
+                    sessionStorage.setItem('token', token);
 
-                commit('SET_USER', user);
-                commit('SET_TOKEN', token);
-            } catch (error) {
-                console.error('Error Registration:', error);
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Token setzen
+
+                    commit('SET_USER', user);
+                    commit('SET_TOKEN', token);
+
+                    return { success: true };
+                } catch (error) {
+                    console.error("Registration error:", error.response?.data?.message || error.message);
+                    return {
+                        success: false,
+                        message: error.response?.data?.message || 'Registration failed. Please try again.',
+                    };
+                }
             }
         },
 
@@ -112,7 +147,7 @@ const store = new createStore({
                 }
 
             } catch (error) {
-                console.error('Error fetching tasks:', error);
+                handleApiError(this, error);
             }
         },
 
@@ -127,7 +162,7 @@ const store = new createStore({
                     commit('SET_TASKS', [...this.state.tasks, response.data]);
                 }
             } catch (error) {
-                console.error('Error adding task:', error);
+                handleApiError(this, error);
             }
         },
         async deleteTask({commit}, taskId) {
@@ -141,7 +176,7 @@ const store = new createStore({
                     commit('SET_TASKS', this.state.tasks.filter(task => task.id !== taskId));
                 }
             } catch (error) {
-                console.error('Error deleting task:', error);
+                handleApiError(this, error);
             }
         },
 
@@ -156,7 +191,7 @@ const store = new createStore({
                     commit('SET_TASKS', this.state.tasks.map(t => t.id === task.id ? task : t));
                 }
             } catch (error) {
-                console.error('Error updating task:', error);
+                handleApiError(this, error);
             }
         },
 
@@ -174,7 +209,7 @@ const store = new createStore({
                     ects: ects
                 });
             } catch (error) {
-                console.error('Error completing task:', error);
+                handleApiError(this, error);
             }
         },
 
@@ -185,7 +220,7 @@ const store = new createStore({
                 commit('SET_PROGRESS', response.data ? response.data : 0);
 
             } catch (error) {
-                console.error('Error fetching progress:', error);
+                handleApiError(this, error);
             }
         },
 

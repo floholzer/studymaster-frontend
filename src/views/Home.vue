@@ -64,7 +64,7 @@ export default {
 
 <style scoped>
 .fill-height {
-    min-height: 100vh;
+    min-height: calc(98% - 50px); /* Berechnung: Bildschirmhöhe minus Footer */
 }
 .v-card {
     border-radius: 16px;

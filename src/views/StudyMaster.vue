@@ -22,6 +22,8 @@ export default {
 <style scoped>
 .main-content {
     background-image: url("../assets/background.jpg");
-    min-height: 100vh;
+    background-size: contain;
+    background-position: center;
+    min-height: calc(98% - 50px); /* Berechnung: Bildschirmhöhe minus Footer */
 }
 </style>

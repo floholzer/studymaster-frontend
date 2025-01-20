@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex flex-column align-center justify-center" style="background: linear-gradient(135deg, #FFD3A5, #99BFBB);">
+    <div class="contact-container d-flex flex-column align-center justify-center" style="background: linear-gradient(135deg, #FFD3A5, #99BFBB);">
         <v-container class="contact py-10" style="padding-top: 2rem;">
             <v-row justify="center">
                 <v-col cols="12" md="8">
@@ -95,8 +95,8 @@ export default {
 </script>
 
 <style scoped>
-.contact {
-    min-height: 100vh;
+.contact-container {
+    min-height: calc(98% - 50px); /* Berechnung: Bildschirmhöhe minus Footer */
 }
 
 .v-card {

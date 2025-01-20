@@ -44,6 +44,11 @@ export default {
 .footer {
     bottom: 0;
     width: 100%;
+    height: 50px; /* Definiert die Höhe des Footers */
+    padding: 0; /* Entfernt unnötiges Padding */
+    display: flex; /* Flexbox verwenden, um Inhalte zu zentrieren */
+    justify-content: center; /* Inhalte horizontal zentrieren */
+    align-items: center; /* Inhalte vertikal zentrieren */
 }
 
 #footer-text {

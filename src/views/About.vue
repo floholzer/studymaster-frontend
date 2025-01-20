@@ -1,6 +1,6 @@
 <template>
-    <div class="d-flex flex-column align-center justify-center" style="background: linear-gradient(135deg, #FFD3A5 ,#99BFBB);">
-        <v-container class="about py-10">
+    <div class="about-page d-flex flex-column align-center justify-center" style="background: linear-gradient(135deg, #FFD3A5 ,#99BFBB);">
+        <v-container class="py-10">
             <v-row justify="center">
                 <v-col cols="12" md="8">
                     <v-card elevation="8" class="pa-5">
@@ -45,8 +45,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.about {
-    min-height: 100vh;
+.about-page {
+    min-height: calc(98% - 50px); /* Berechnung: Bildschirmhöhe minus Footer */
 }
 .v-card {
     border-radius: 16px;
