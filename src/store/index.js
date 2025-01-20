@@ -217,14 +217,14 @@ const store = new createStore({
                 console.error('Subject is empty');
                 return;
             }
-            /* Semester-Objekt:
+            /* Subject-Objekt:
             {
                 id: 1,
-                semester_id: 1,
+                semesterId: 1,
                 name: "CLCO",
                 ects: 30,
                 created_at: "2022-03-31",
-                user_id: 1
+                userId: 1
             */
             try {
                 const response = await axios.post(api_url+'/subjects', subject);

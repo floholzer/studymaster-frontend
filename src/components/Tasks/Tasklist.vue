@@ -88,10 +88,9 @@ export default {
             subjects: [],
         };
     },
-    async beforeMount() {
+    async mounted() {
       await this.$store.dispatch('fetchTasks');
       await this.$store.dispatch('getProgress');
-      await this.$store.dispatch('getSemesters');
       this.semester = this.semesterStore[0];
       await this.$store.dispatch('getSubjects', this.semester.id);
       this.subjects = this.$store.getters.getSubjects;

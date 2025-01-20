@@ -1,7 +1,7 @@
 <template>
     <Header/>
     <div class="main-content">
-        <AddSemester v-if="showAddSemesterDialog()"/>
+        <AddSemester v-if="showAddSemesterDialog"/>
         <Tasklist v-else/>
     </div>
 </template>
@@ -15,14 +15,26 @@ import Task from "@/components/Tasks/Task.vue";
 export default {
     name: 'StudyMaster',
     components: {
-        Task,
         Header,
         Tasklist,
         AddSemester,
     },
+    data() {
+        return {
+            showAddSemesterDialog: false,
+        };
+    },
+    async computed() {
+        await this.checkSemesters();
+    },
     methods: {
-        showAddSemesterDialog() {
-            return false;
+        async checkSemesters() {
+            try {
+                const semesters = await this.$store.dispatch('getSemesters');
+                this.showAddSemesterDialog = semesters === undefined || semesters.length === 0;
+            } catch (error) {
+                console.error('Error retrieving Semester:', error);
+            }
         },
     },
 };

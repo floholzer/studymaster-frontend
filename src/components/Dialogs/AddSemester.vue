@@ -11,20 +11,6 @@
                         :rules="[v => !!v || 'Semester name is required']"
                         required
                     ></v-text-field>
-                    <v-text-field
-                        v-model="semester.startDate"
-                        label="Start date"
-                        type="date"
-                        :rules="[v => !!v || 'Start date is required']"
-                        required
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="semester.endDate"
-                        label="End date"
-                        type="date"
-                        :rules="[v => !!v || 'End date is required']"
-                        required
-                    ></v-text-field>
 
                     <!-- Fächer hinzufügen -->
                     <v-divider class="my-4"></v-divider>
@@ -72,8 +58,6 @@ export default {
             valid: false,
             semester: {
                 name: '',
-                startDate: '',
-                endDate: '',
             },
             subjects: [
                 { name: '', ects: null },
@@ -87,11 +71,26 @@ export default {
         removeSubject(index) {
             this.subjects.splice(index, 1);
         },
-        saveData() {
+        async saveData() {
             if (this.$refs.form.validate()) {
-                // Daten speichern und Dialog schließen
-                console.log('Semester:', this.semester);
-                console.log('Fächer:', this.subjects);
+
+                const ects = this.subjects.reduce((acc, subject) => acc + subject.ects, 0);
+
+                const newSemester = {
+                    userId: this.$store.getters.getUser.id,
+                    name: this.semester.name,
+                    ects: ects,
+                };
+                await this.$store.dispatch('addSemester', newSemester);
+
+                for(const subject of this.subjects) {
+                    await this.$store.dispatch('addSubject', {
+                        semesterId: this.$store.getters.getSemesters[0].id,
+                        name: subject.name,
+                        ects: subject.ects,
+                        userId: this.$store.getters.getUser.id
+                    });
+                }
                 this.dialog = false;
             }
         },
