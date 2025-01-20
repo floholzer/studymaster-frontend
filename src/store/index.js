@@ -92,7 +92,7 @@ const store = new createStore({
             }
         },
 
-        async register({commit}, userData) {
+        async register({commit, dispatch}, userData) {
             if (userData.username.length <= 0 || userData.password.length <= 0 || userData.email.length <= 0 || userData.firstname.length <= 0 || userData.lastname.length <= 0) {
                 return {
                     success: false,
@@ -109,6 +109,24 @@ const store = new createStore({
                         email: userData.email
                     });
 
+                    if (response.status === 200) {
+                        // Nach erfolgreicher Registrierung den Login durchführen
+                        const loginResult = await dispatch("login", {
+                            username: userData.username,
+                            password: userData.password,
+                        });
+
+                        if (loginResult.success) {
+                            return { success: true };
+                        } else {
+                            return {
+                                success: false,
+                                message: "Registration successful, but login failed.",
+                            };
+                        }
+                    }
+
+                    /*
                     // Annahme: Die Antwort enthält einen JWT-Token und Benutzerdaten
                     const token = response.data.jwt;
                     const user = {
@@ -126,6 +144,7 @@ const store = new createStore({
 
                     commit('SET_USER', user);
                     commit('SET_TOKEN', token);
+                    */
 
                     return { success: true };
                 } catch (error) {
