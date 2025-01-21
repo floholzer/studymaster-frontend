@@ -1,7 +1,7 @@
 import {createStore} from 'vuex'
 import axios from 'axios'
 
-const api_url = 'http://localhost:8081';
+const api_url = 'http://localhost:8080';
 
 function handleApiError(store, error) {
     if (error.response && error.response.status === 401) {
