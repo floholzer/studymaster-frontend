@@ -25,13 +25,6 @@
                         label="Priority"
                     ></v-select>
                     <v-text-field
-                        v-model="task.ects"
-                        label="ECTS"
-                        type="number"
-                        :rules="[v => !!v || 'ECTS are required']"
-                        required
-                    ></v-text-field>
-                    <v-text-field
                         v-model="task.maxPoints"
                         label="Max Points"
                         type="number"
@@ -43,7 +36,7 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="red darken-1" variant="outlined" @click="$emit('close')">Cancel</v-btn>
-                <v-btn color="green darken-1" variant="flat" @click="save" append-icon="mdi-content-save-check-outline">Save</v-btn>
+                <v-btn color="green darken-1" variant="flat" @click="save" append-icon="mdi-content-save">Save</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -62,7 +55,6 @@
                     description: "",
                     dueDate: "",
                     priority: "Medium",
-                    ects: null,
                     maxPoints: null,
                 },
             };

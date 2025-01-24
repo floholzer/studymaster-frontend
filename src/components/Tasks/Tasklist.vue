@@ -35,16 +35,18 @@
                 <i style="color: gray;" v-if="openTasks.length===0">No tasks created yet...</i>
 
                 <div class="task-grid mx-6 my-6">
-                    <Task
+                    <Task class="task"
                         v-for="(task) in openTasks"
                         :key="task.id"
                         :taskId="task.id"
-                        :subject="task.title"
+                        :taskName="task.title"
+                        :subject="getSubjectName(task.subjectId)"
                         :ects="task.ects"
                         :description="task.description"
                         :due_date="task.dueDate"
                         :onDelete="deleteTask"
-                        :onDone="completeTask"
+                        :onDone="openEnterReachedPointsDialog"
+
                     />
                 </div>
             </v-card>
@@ -56,6 +58,13 @@
             @close="closeTaskDialog"
             @save="addTask"
         />
+        <!-- Dialog für erreichte Punkte -->
+        <EnterPoints
+            v-if="showPointsDialog"
+            :taskId="selectedTaskId"
+            @save="completeTask"
+            @close="closePointsDialog"
+        />
     </v-container>
 </template>
 
@@ -65,10 +74,12 @@ import ProgressBar from "@/components/Tasks/ProgressBar.vue";
 import BigGreen from "@/components/Buttons/BigGreen.vue";
 import Badge from "@/components/Tasks/Badge.vue";
 import AddTask from "@/components/Dialogs/AddTask.vue";
+import EnterPoints from "@/components/Dialogs/EnterPoints.vue";
 
 export default {
     name: "Tasklist",
     components: {
+        EnterPoints,
         Badge,
         BigGreen,
         ProgressBar,
@@ -77,6 +88,8 @@ export default {
     },
     data() {
         return {
+            selectedTaskId: null,
+            showPointsDialog: false,
             showTaskDialog: false,
             selectedSubject: null,
             semester: {
@@ -114,6 +127,16 @@ export default {
         },
     },
     methods: {
+        closePointsDialog() {
+            this.showPointsDialog = false;
+        },
+        openEnterReachedPointsDialog(taskId) {
+            this.selectedTaskId = taskId;
+            this.showPointsDialog = true;
+        },
+        getSubjectName(subjectId) {
+            return this.subjects.find(subject => subject.id === subjectId).name;
+        },
         openTaskDialog(subject) {
             this.selectedSubject = subject;
             this.showTaskDialog = true;
@@ -132,10 +155,11 @@ export default {
             await this.$store.dispatch('addTask', newTask);
             this.closeTaskDialog();
         },
-        async completeTask(taskId, ects) {
-            await this.$store.dispatch('completeTask', { taskId, ects });
+        async completeTask(taskId, reachedPoints) {
+            await this.$store.dispatch('completeTask', { taskId, reachedPoints });
             await this.$store.dispatch('fetchTasks');
             await this.$store.dispatch('getProgress');
+            this.showPointsDialog = false;
         },
         async updateTask(taskId) {
             await this.$store.dispatch('updateTask', taskId);
