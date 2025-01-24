@@ -171,6 +171,7 @@ const store = new createStore({
             try {
                 const user = store.getters.getUser;
                 const response = await axios.get(api_url+'/semesters/' + user.id.toString());
+
                 commit('SET_SEMESTERS', response.data);
 
             } catch (error) {
@@ -324,8 +325,7 @@ const store = new createStore({
 
         logout({commit}) {
             commit('CLEAR_AUTH');
-            sessionStorage.removeItem('user');
-            sessionStorage.removeItem('token');
+            sessionStorage.clear();
             delete axios.defaults.headers.common['Authorization'];
         },
 

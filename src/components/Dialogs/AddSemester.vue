@@ -29,7 +29,10 @@
                                 v-model="subject.ects"
                                 label="ECTS"
                                 type="number"
-                                :rules="[v => v > 0 || 'ECTS must be greater than 0']"
+                                :rules="[
+                                    v => !!v || 'ECTS are required',
+                                    v => (v > 0 && v <= 99) || 'ECTS must be greater than 0'
+                                    ]"
                                 required
                             ></v-text-field>
                         </v-col>
@@ -92,6 +95,7 @@ export default {
                     });
                 }
                 this.dialog = false;
+                this.$emit('dialog-closed');
             }
         },
     },

@@ -1,8 +1,12 @@
 <template>
     <Header/>
     <div class="main-content">
-        <AddSemester v-if="showAddSemesterDialog"/>
+        <AddSemester
+            v-if="showAddSemesterDialog"
+            @dialog-closed="onDialogClosed"
+        />
         <Tasklist v-else/>
+
     </div>
 </template>
 
@@ -21,20 +25,20 @@ export default {
     },
     data() {
         return {
-            showAddSemesterDialog: false,
+            showAddSemesterDialog: this.$store.getters.getSemesters.length === 0,
         };
     },
-    async computed() {
-        await this.checkSemesters();
+    async mounted() {
+        try {
+            await this.$store.dispatch('getSemesters');
+            this.showAddSemesterDialog = this.$store.getters.getSemesters.length === 0;
+        } catch (error) {
+            console.error('Error retrieving Semester:', error);
+        }
     },
     methods: {
-        async checkSemesters() {
-            try {
-                const semesters = await this.$store.dispatch('getSemesters');
-                this.showAddSemesterDialog = semesters === undefined || semesters.length === 0;
-            } catch (error) {
-                console.error('Error retrieving Semester:', error);
-            }
+        onDialogClosed() {
+            this.showAddSemesterDialog = false;
         },
     },
 };

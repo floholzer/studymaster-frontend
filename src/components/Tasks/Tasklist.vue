@@ -91,6 +91,7 @@ export default {
     async mounted() {
       await this.$store.dispatch('fetchTasks');
       await this.$store.dispatch('getProgress');
+      await this.$store.dispatch('getSemesters');
       this.semester = this.semesterStore[0];
       await this.$store.dispatch('getSubjects', this.semester.id);
       this.subjects = this.$store.getters.getSubjects;
@@ -103,7 +104,7 @@ export default {
             });
         },
         semesterStore() {
-            return this.$store.state.semesters;
+            return this.$store.getters.getSemesters;
         },
         progressAbsolute() {
             return (this.$store.getters.getProgress/100)*30;
