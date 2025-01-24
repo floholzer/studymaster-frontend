@@ -36,13 +36,15 @@
                                 required
                             ></v-text-field>
                         </v-col>
+                        <!-- Temporary removed button TODO update backend to be able to send multiple subjects at once
                         <v-col cols="2">
                             <v-btn icon @click="removeSubject(index)">
                                 <v-icon color="red">mdi-delete</v-icon>
                             </v-btn>
                         </v-col>
+                        -->
                     </v-row>
-                    <v-btn text @click="addSubject" prepend-icon="mdi-playlist-plus">add Subject</v-btn>
+                    <!--<v-btn text @click="addSubject" prepend-icon="mdi-playlist-plus">add Subject</v-btn>-->
                 </v-form>
             </v-card-text>
             <v-card-actions>
