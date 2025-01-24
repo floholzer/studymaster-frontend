@@ -1,8 +1,8 @@
 <script setup>
 defineProps([
     'taskId',
+    'taskName',
     'subject',
-    'ects',
     'description',
     'due_date',
     'onDelete',
@@ -23,11 +23,11 @@ defineProps([
         </div>
         <div class="task-name">{{ subject }}</div>
         <div>until {{ due_date }}</div>
-        <small class="task-ects">{{ ects }} ECTS</small>
+        <small class="task-subject">{{ subject }}</small>
         <div>{{ description }}</div>
 
         <!-- Done Button -->
-        <v-btn class="btn-done" @click="onDone(taskId, ects)">
+        <v-btn class="btn-done" @click="onDone(taskId)">
             Done
             <v-icon right>mdi-check</v-icon>
         </v-btn>
@@ -40,7 +40,7 @@ defineProps([
     font-size: 1.5rem;
 }
 
-.task-ects {
+.task-subject {
     color: #4caf50;
     font-weight: 500;
     font-size: 1rem;
@@ -51,11 +51,14 @@ defineProps([
     height: 200px;
     border-radius: 8px;
     background-color: #fce5cd;
-    box-shadow: 0 2px 8px black;
     text-align: center;
     font-size: 0.8rem;
     position: relative;
     border: dimgray solid 5px;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+.task-card:hover {
+    transform: scale(1.10);
 }
 
 .btn-done {
