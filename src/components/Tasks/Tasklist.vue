@@ -161,6 +161,14 @@ export default {
         async deleteTask(taskId) {
             await this.$store.dispatch('deleteTask', taskId);
         },
+        handleSemesterAdded() {
+          // Neues Semester wurde hinzugefügt, aktualisiere Ansicht
+          this.showAddSemesterDialog = false;
+          this.$router.go(); // Seite neu laden, um Daten zu aktualisieren
+        },
+        closeAddSemesterDialog() {
+          this.showAddSemesterDialog = false;
+        },
     },
 };
 </script>
