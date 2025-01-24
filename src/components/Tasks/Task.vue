@@ -13,7 +13,7 @@ defineProps([
 <template>
     <v-card class="task-card d-flex flex-column" outlined>
         <!-- Delete and Edit Icon -->
-        <div class="d-flex justify-space-between mx-1 mt-1">
+        <div class="control-items d-flex justify-space-between mx-1 mb-1 mt-1">
             <v-btn small icon class="edit-icon" color="blue" @click="console.log('Task edit clicked.')">
                 <v-icon>mdi-pencil</v-icon>
             </v-btn>
@@ -21,6 +21,7 @@ defineProps([
                 <v-icon small>mdi-close</v-icon>
             </v-btn>
         </div>
+        <v-divider></v-divider>
         <div class="task-name">{{ taskName }}</div>
         <div>until {{ due_date }}</div>
         <small class="task-subject">{{ subject }}</small>
@@ -37,7 +38,7 @@ defineProps([
 <style scoped>
 .task-name {
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
 
 .task-subject {
@@ -54,7 +55,7 @@ defineProps([
     text-align: center;
     font-size: 0.8rem;
     position: relative;
-    border: dimgray solid 5px;
+    border: dimgray solid 3px;
     transition: box-shadow 0.4s ease, transform 0.4s ease;
 }
 .task-card:hover {
