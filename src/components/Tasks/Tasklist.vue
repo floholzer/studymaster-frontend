@@ -2,13 +2,22 @@
     <v-container fluid class="d-flex justify-center align-center">
         <v-col cols="12" md="6">
             <v-card class="main pa-4">
-                <h1>{{ semester.name }}</h1>
-                <v-divider class="mb-4"></v-divider>
-                <!-- Fortschrittsanzeige für ECTS-Punkte -->
-                <ProgressBar
-                    :progressAbsolute="progressAbsolute"
-                    :progress-percentage="progressPercentage"
-                />
+              <!-- Zeige Fehler oder Semesterinformationen -->
+              <div v-if="!semester || semester.name === 'Failed to load semester'" class="text-center">
+                <p style="color: red;">Semester konnte nicht geladen werden.</p>
+                <v-btn color="primary" @click="showAddSemesterDialog = true">
+                  Neues Semester hinzufügen
+                </v-btn>
+              </div>
+
+              <div v-else>
+                  <h1>{{ semester.name }}</h1>
+                  <v-divider class="mb-4"></v-divider>
+                  <!-- Fortschrittsanzeige für ECTS-Punkte -->
+                  <ProgressBar
+                      :progressAbsolute="progressAbsolute"
+                      :progress-percentage="progressPercentage"
+                  />
 
                 <!-- Fächer anzeigen -->
                 <v-row>
@@ -47,6 +56,7 @@
                         :onDone="completeTask"
                     />
                 </div>
+              </div>
             </v-card>
         </v-col>
         <!-- Task Dialog -->
@@ -55,6 +65,12 @@
             :subject="selectedSubject"
             @close="closeTaskDialog"
             @save="addTask"
+        />
+        <!-- Add Semester Dialog -->
+        <AddSemester
+            v-if="showAddSemesterDialog"
+            @semester-added="handleSemesterAdded"
+            @close="closeAddSemesterDialog"
         />
     </v-container>
 </template>
@@ -65,6 +81,7 @@ import ProgressBar from "@/components/Tasks/ProgressBar.vue";
 import BigGreen from "@/components/Buttons/BigGreen.vue";
 import Badge from "@/components/Tasks/Badge.vue";
 import AddTask from "@/components/Dialogs/AddTask.vue";
+import AddSemester from "@/components/Dialogs/AddSemester.vue";
 
 export default {
     name: "Tasklist",
@@ -73,11 +90,13 @@ export default {
         BigGreen,
         ProgressBar,
         Task,
-        AddTask
+        AddTask,
+        AddSemester,
     },
     data() {
         return {
             showTaskDialog: false,
+            showAddSemesterDialog: false, // Zustand für AddSemester
             selectedSubject: null,
             semester: {
                 id: null,

@@ -81,17 +81,24 @@ export default {
                     name: this.semester.name,
                     ects: ects,
                 };
-                await this.$store.dispatch('addSemester', newSemester);
+              try {
+                await this.$store.dispatch("addSemester", newSemester);
 
-                for(const subject of this.subjects) {
-                    await this.$store.dispatch('addSubject', {
-                        semesterId: this.$store.getters.getSemesters[0].id,
-                        name: subject.name,
-                        ects: subject.ects,
-                        userId: this.$store.getters.getUser.id
-                    });
+                for (const subject of this.subjects) {
+                  await this.$store.dispatch("addSubject", {
+                    semesterId: this.$store.getters.getSemesters[0].id,
+                    name: subject.name,
+                    ects: subject.ects,
+                    userId: this.$store.getters.getUser.id,
+                  });
                 }
+
                 this.dialog = false;
+
+                this.$emit("semester-added");
+              } catch (error) {
+                console.error("Error adding semester or subjects:", error);
+              }
             }
         },
     },
