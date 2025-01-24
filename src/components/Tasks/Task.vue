@@ -21,7 +21,7 @@ defineProps([
                 <v-icon small>mdi-close</v-icon>
             </v-btn>
         </div>
-        <div class="task-name">{{ subject }}</div>
+        <div class="task-name">{{ taskName }}</div>
         <div>until {{ due_date }}</div>
         <small class="task-subject">{{ subject }}</small>
         <div>{{ description }}</div>
