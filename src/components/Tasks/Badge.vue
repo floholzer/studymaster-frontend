@@ -1,15 +1,15 @@
 <script setup>
-defineProps(['BadgeTitle', 'BadgeDescription']);
+defineProps(['BadgeTitle', 'BadgeDescription', 'colorClass']);
 </script>
 
 <template>
     <div class="flip-card mx-1 my-1">
         <div class="flip-card-inner">
-            <div class="flip-card-front">
+            <div class="flip-card-front" :class="colorClass">
                 <p class="title">{{ BadgeTitle}}</p>
                 <v-icon class="medal">mdi-medal</v-icon>
             </div>
-            <div class="flip-card-back">
+            <div class="flip-card-back" :class="colorClass + '-back'">
                 <p class="desceription">{{ BadgeDescription }}</p>
             </div>
         </div>
@@ -27,10 +27,15 @@ defineProps(['BadgeTitle', 'BadgeDescription']);
 }
 
 .title {
-    font-size: 1.3em;
+    font-size: 1.2em;
     font-weight: 900;
     text-align: center;
-    margin: 0;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    max-height: 3rem;
+    line-height: 1.2rem;
 }
 
 .medal {
@@ -40,10 +45,16 @@ defineProps(['BadgeTitle', 'BadgeDescription']);
 }
 
 .desceription {
-    font-size: 1em;
+    font-size: 0.9em;
     font-weight: 500;
     text-align: center;
     margin: 0;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    max-height: 3rem;
+    line-height: 1.2rem;
 }
 
 .flip-card-inner {
@@ -65,21 +76,59 @@ defineProps(['BadgeTitle', 'BadgeDescription']);
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100%;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    border: 1px solid goldenrod;
+    border: 1px solid;
     border-radius: 1rem;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .flip-card-front {
-    background: gold;
+  color: black;
 }
 
 .flip-card-back {
-    background: goldenrod;
-    color: black;
-    transform: rotateY(180deg);
+  color: black;
+  transform: rotateY(180deg);
+}
+
+.wood {
+  background: #D2B48C;
+  border-color: #8B4513;
+}
+
+.wood-back {
+  background: #8B4513;
+}
+
+.bronze {
+  background: #CD7F32;
+  border-color: #8C6239;
+}
+
+.bronze-back {
+  background: #8C6239;
+}
+
+.silver {
+  background: #C0C0C0;
+  border-color: #A8A8A8;
+}
+
+.silver-back {
+  background: #A8A8A8;
+}
+
+.gold {
+  background: #FFD700;
+  border-color: goldenrod;
+}
+
+.gold-back {
+  background: goldenrod;
 }
 </style>

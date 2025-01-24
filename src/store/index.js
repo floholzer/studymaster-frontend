@@ -26,6 +26,7 @@ const store = new createStore({
         progress: 0,
         semesters: [],
         subjects: [],
+        badges: [],
     },
     getters: {
         getUser: (state) => state.user,
@@ -35,6 +36,7 @@ const store = new createStore({
         getProgress: (state) => state.progress,
         getSemesters: (state) => state.semesters,
         getSubjects: (state) => state.subjects,
+        getBadges: (state) => state.badges,
     },
     mutations: {
         SET_USER(state, user) {
@@ -63,6 +65,12 @@ const store = new createStore({
         },
         SET_SUBJECTS(state, subjects) {
             state.subjects = subjects;
+        },
+        SET_BADGES(state, badges) {
+            state.badges = badges;
+        },
+        ADD_BADGE(state, badge) {
+            state.badges.push(badge);
         },
     },
     actions: {
@@ -320,6 +328,33 @@ const store = new createStore({
 
             } catch (error) {
                 handleApiError(this, error);
+            }
+        },
+
+        async fetchBadges({ commit }) {
+            try {
+                // durch API-Aufruf ersetzen
+                const exampleBadges = [
+                    { title: "First Semester", description: "Completed your first semester!" },
+                    { title: "Overachiever", description: "Earned 30+ ECTS in one semester!" },
+                    { title: "Task Master", description: "Completed 10 tasks!" },
+                ];
+                commit("SET_BADGES", exampleBadges);
+            } catch (error) {
+                console.error("Error fetching badges:", error);
+            }
+        },
+
+        async addBadge({ commit }, badge) {
+            try {
+                // Beispiel für API-Aufruf
+                // const response = await axios.post(`${api_url}/badges`, badge);
+                // commit("ADD_BADGE", response.data);
+
+                // Statische Lösung (z. B. für Offline-Demo):
+                commit("ADD_BADGE", badge);
+            } catch (error) {
+                console.error("Error adding badge:", error);
             }
         },
 
