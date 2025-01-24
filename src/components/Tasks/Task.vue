@@ -1,8 +1,8 @@
 <script setup>
 defineProps([
     'taskId',
+    'taskName',
     'subject',
-    'ects',
     'description',
     'due_date',
     'onDelete',
@@ -13,7 +13,7 @@ defineProps([
 <template>
     <v-card class="task-card d-flex flex-column" outlined>
         <!-- Delete and Edit Icon -->
-        <div class="d-flex justify-space-between mx-1 mt-1">
+        <div class="control-items d-flex justify-space-between mx-1 mb-1 mt-1">
             <v-btn small icon class="edit-icon" color="blue" @click="console.log('Task edit clicked.')">
                 <v-icon>mdi-pencil</v-icon>
             </v-btn>
@@ -21,13 +21,14 @@ defineProps([
                 <v-icon small>mdi-close</v-icon>
             </v-btn>
         </div>
-        <div class="task-name">{{ subject }}</div>
+        <v-divider></v-divider>
+        <div class="task-name">{{ taskName }}</div>
         <div>until {{ due_date }}</div>
-        <small class="task-ects">{{ ects }} ECTS</small>
+        <small class="task-subject">{{ subject }}</small>
         <div>{{ description }}</div>
 
         <!-- Done Button -->
-        <v-btn class="btn-done" @click="onDone(taskId, ects)">
+        <v-btn class="btn-done" @click="onDone(taskId)">
             Done
             <v-icon right>mdi-check</v-icon>
         </v-btn>
@@ -37,10 +38,10 @@ defineProps([
 <style scoped>
 .task-name {
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
 
-.task-ects {
+.task-subject {
     color: #4caf50;
     font-weight: 500;
     font-size: 1rem;
@@ -51,11 +52,14 @@ defineProps([
     height: 200px;
     border-radius: 8px;
     background-color: #fce5cd;
-    box-shadow: 0 2px 8px black;
     text-align: center;
     font-size: 0.8rem;
     position: relative;
-    border: dimgray solid 5px;
+    border: dimgray solid 3px;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+.task-card:hover {
+    transform: scale(1.10);
 }
 
 .btn-done {

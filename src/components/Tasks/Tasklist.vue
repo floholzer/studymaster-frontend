@@ -2,22 +2,13 @@
     <v-container fluid class="d-flex justify-center align-center">
         <v-col cols="12" md="6">
             <v-card class="main pa-4">
-              <!-- Zeige Fehler oder Semesterinformationen -->
-              <div v-if="!semester || semester.name === 'Failed to load semester'" class="text-center">
-                <p style="color: red;">Semester konnte nicht geladen werden.</p>
-                <v-btn color="primary" @click="showAddSemesterDialog = true">
-                  Neues Semester hinzufügen
-                </v-btn>
-              </div>
-
-              <div v-else>
-                  <h1>{{ semester.name }}</h1>
-                  <v-divider class="mb-4"></v-divider>
-                  <!-- Fortschrittsanzeige für ECTS-Punkte -->
-                  <ProgressBar
-                      :progressAbsolute="progressAbsolute"
-                      :progress-percentage="progressPercentage"
-                  />
+                <h1>{{ semester.name }}</h1>
+                <v-divider class="mb-4"></v-divider>
+                <!-- Fortschrittsanzeige für ECTS-Punkte -->
+                <ProgressBar
+                    :progressAbsolute="progressAbsolute"
+                    :progress-percentage="progressPercentage"
+                />
 
                 <!-- Fächer anzeigen -->
                 <v-row>
@@ -44,19 +35,20 @@
                 <i style="color: gray;" v-if="openTasks.length===0">No tasks created yet...</i>
 
                 <div class="task-grid mx-6 my-6">
-                    <Task
+                    <Task class="task"
                         v-for="(task) in openTasks"
                         :key="task.id"
                         :taskId="task.id"
-                        :subject="task.title"
+                        :taskName="task.title"
+                        :subject="getSubjectName(task.subjectId)"
                         :ects="task.ects"
                         :description="task.description"
                         :due_date="task.dueDate"
                         :onDelete="deleteTask"
-                        :onDone="completeTask"
+                        :onDone="openEnterReachedPointsDialog"
+
                     />
                 </div>
-              </div>
             </v-card>
         </v-col>
         <!-- Task Dialog -->
@@ -66,11 +58,12 @@
             @close="closeTaskDialog"
             @save="addTask"
         />
-        <!-- Add Semester Dialog -->
-        <AddSemester
-            v-if="showAddSemesterDialog"
-            @semester-added="handleSemesterAdded"
-            @close="closeAddSemesterDialog"
+        <!-- Dialog für erreichte Punkte -->
+        <EnterPoints
+            v-if="showPointsDialog"
+            :taskId="selectedTaskId"
+            @save="completeTask"
+            @close="closePointsDialog"
         />
     </v-container>
 </template>
@@ -81,22 +74,23 @@ import ProgressBar from "@/components/Tasks/ProgressBar.vue";
 import BigGreen from "@/components/Buttons/BigGreen.vue";
 import Badge from "@/components/Tasks/Badge.vue";
 import AddTask from "@/components/Dialogs/AddTask.vue";
-import AddSemester from "@/components/Dialogs/AddSemester.vue";
+import EnterPoints from "@/components/Dialogs/EnterPoints.vue";
 
 export default {
     name: "Tasklist",
     components: {
+        EnterPoints,
         Badge,
         BigGreen,
         ProgressBar,
         Task,
-        AddTask,
-        AddSemester,
+        AddTask
     },
     data() {
         return {
+            selectedTaskId: null,
+            showPointsDialog: false,
             showTaskDialog: false,
-            showAddSemesterDialog: false, // Zustand für AddSemester
             selectedSubject: null,
             semester: {
                 id: null,
@@ -133,6 +127,16 @@ export default {
         },
     },
     methods: {
+        closePointsDialog() {
+            this.showPointsDialog = false;
+        },
+        openEnterReachedPointsDialog(taskId) {
+            this.selectedTaskId = taskId;
+            this.showPointsDialog = true;
+        },
+        getSubjectName(subjectId) {
+            return this.subjects.find(subject => subject.id === subjectId).name;
+        },
         openTaskDialog(subject) {
             this.selectedSubject = subject;
             this.showTaskDialog = true;
@@ -151,24 +155,17 @@ export default {
             await this.$store.dispatch('addTask', newTask);
             this.closeTaskDialog();
         },
-        async completeTask(taskId, ects) {
-            await this.$store.dispatch('completeTask', { taskId, ects });
+        async completeTask(taskId, reachedPoints) {
+            await this.$store.dispatch('completeTask', { taskId, reachedPoints });
             await this.$store.dispatch('fetchTasks');
             await this.$store.dispatch('getProgress');
+            this.showPointsDialog = false;
         },
         async updateTask(taskId) {
             await this.$store.dispatch('updateTask', taskId);
         },
         async deleteTask(taskId) {
             await this.$store.dispatch('deleteTask', taskId);
-        },
-        handleSemesterAdded() {
-          // Neues Semester wurde hinzugefügt, aktualisiere Ansicht
-          this.showAddSemesterDialog = false;
-          this.$router.go(); // Seite neu laden, um Daten zu aktualisieren
-        },
-        closeAddSemesterDialog() {
-          this.showAddSemesterDialog = false;
         },
     },
 };

@@ -30,7 +30,7 @@
                 </v-col>
             </v-row>
 
-            <v-row class="mt-4">
+            <v-row class="mt-4 description">
                 <v-col cols="12">
                     <h2 class="mt-6 mb-4">Why StudyMaster?</h2>
                     <v-row justify="space-evenly">
@@ -68,5 +68,8 @@ export default {
 }
 .v-card {
     border-radius: 16px;
+}
+.description {
+    color: #DEDEDE;
 }
 </style>
