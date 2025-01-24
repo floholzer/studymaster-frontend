@@ -50,6 +50,10 @@
                     />
                 </div>
             </v-card>
+            <!-- BadgeList anzeigen -->
+            <div class="badge-list-container">
+              <BadgeList />
+            </div>
         </v-col>
         <!-- Task Dialog -->
         <AddTask
@@ -75,6 +79,7 @@ import BigGreen from "@/components/Buttons/BigGreen.vue";
 import Badge from "@/components/Tasks/Badge.vue";
 import AddTask from "@/components/Dialogs/AddTask.vue";
 import EnterPoints from "@/components/Dialogs/EnterPoints.vue";
+import BadgeList from "@/components/Tasks/BadgeList.vue";
 
 export default {
     name: "Tasklist",
@@ -84,7 +89,8 @@ export default {
         BigGreen,
         ProgressBar,
         Task,
-        AddTask
+        AddTask,
+        BadgeList,
     },
     data() {
         return {
@@ -182,5 +188,15 @@ export default {
     flex-wrap: wrap;
     gap: 16px;
     justify-content: center;
+}
+
+.badge-list-container {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%; #
+  background-color: rgba(249, 249, 249, 0.8);
 }
 </style>

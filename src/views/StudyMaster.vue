@@ -3,8 +3,6 @@
     <div class="main-content">
         <AddSemester v-if="showAddSemesterDialog"/>
         <Tasklist v-else/>
-        <!-- Badges -->
-        <BadgeList />
     </div>
 </template>
 
@@ -12,7 +10,6 @@
 import Tasklist from "@/components/Tasks/Tasklist.vue";
 import Header from "@/components/Header.vue";
 import AddSemester from "@/components/Dialogs/AddSemester.vue";
-import BadgeList from "@/components/Tasks/BadgeList.vue";
 import Task from "@/components/Tasks/Task.vue";
 
 export default {
@@ -21,7 +18,6 @@ export default {
         Header,
         Tasklist,
         AddSemester,
-        BadgeList,
     },
     data() {
         return {

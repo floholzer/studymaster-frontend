@@ -102,7 +102,7 @@ defineProps(['BadgeTitle', 'BadgeDescription', 'colorClass']);
 }
 
 .wood-back {
-  background: #8B4513;
+  background: #D2B48C;
 }
 
 .bronze {
@@ -111,24 +111,24 @@ defineProps(['BadgeTitle', 'BadgeDescription', 'colorClass']);
 }
 
 .bronze-back {
-  background: #8C6239;
+  background: #CD7F32;
 }
 
 .silver {
-  background: #C0C0C0;
-  border-color: #A8A8A8;
+  background: silver;
+  border-color: darkgrey;
 }
 
 .silver-back {
-  background: #A8A8A8;
+  background: silver;
 }
 
 .gold {
-  background: #FFD700;
+  background: gold;
   border-color: goldenrod;
 }
 
 .gold-back {
-  background: goldenrod;
+  background: gold;
 }
 </style>

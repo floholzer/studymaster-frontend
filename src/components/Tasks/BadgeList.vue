@@ -45,27 +45,21 @@ export default {
 <style scoped>
 .badge-list {
   background-color: #f9f9f9;
-  position: absolute;
-  bottom: 0;
+  position: fixed;
+  bottom: 30px;
   width: 100%;
   height: 120px;
-  overflow-x: auto;
-  white-space: nowrap;
+  z-index: 10;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  overflow-x: hidden;
   border-top: 1px solid #ccc;
   box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
   padding: 10px 20px;
 }
 
 .badge-list::-webkit-scrollbar {
-  height: 8px;
-}
-
-.badge-list::-webkit-scrollbar-thumb {
-  background-color: #c0c0c0;
-  border-radius: 4px;
-}
-
-.badge-list::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
+  display: none;
 }
 </style>
