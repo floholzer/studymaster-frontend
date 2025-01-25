@@ -2,7 +2,31 @@
     <v-container fluid class="d-flex justify-center align-center">
         <v-col cols="12" md="6">
             <v-card class="main pa-4">
-                <h1>{{ semester.name }}</h1>
+                <div class="semester-and-badges">
+                  <h1>{{ semester.name }}</h1>
+                    <div class="badges-inline">
+                      <Badge
+                          BadgeTitle="Rookie"
+                          BadgeDescription="Erste LV abgeschlossen"
+                          colorClass="wood"
+                      />
+                      <Badge
+                          BadgeTitle="Bronze"
+                          BadgeDescription="Completed 10 tasks!"
+                          colorClass="bronze"
+                      />
+                      <Badge
+                          BadgeTitle="Silver Scholar"
+                          BadgeDescription="Achieved 15 ECTS!"
+                          colorClass="silver"
+                      />
+                      <Badge
+                          BadgeTitle="Overachiever"
+                          BadgeDescription="Get 60ECTS in one semester"
+                          colorClass="gold"
+                      />
+                    </div>
+                </div>
                 <v-divider class="mb-4"></v-divider>
                 <!-- Fortschrittsanzeige für ECTS-Punkte -->
                 <ProgressBar
@@ -50,10 +74,7 @@
                     />
                 </div>
             </v-card>
-            <!-- BadgeList anzeigen -->
-            <div class="badge-list-container">
-              <BadgeList />
-            </div>
+
         </v-col>
         <!-- Task Dialog -->
         <AddTask
@@ -219,13 +240,15 @@ export default {
     justify-content: center;
 }
 
-.badge-list-container {
-  margin-top: 24px;
+.semester-and-badges {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  position: relative;
-  width: 100%;
-  background-color: rgba(249, 249, 249, 0.8);
+}
+
+.badges-inline {
+  display: flex;
+  gap: 10px; /* Abstand zwischen den Badges */
+  align-items: center; /* Vertikal zentriert */
 }
 </style>

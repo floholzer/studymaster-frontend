@@ -20,40 +20,49 @@ defineProps(['BadgeTitle', 'BadgeDescription', 'colorClass']);
 /* From Uiverse.io by joe-watson-sbf */
 .flip-card {
     background-color: transparent;
-    width: 110px;
-    height: 150px;
+    width: 80px;
+    height: 110px;
     perspective: 1000px;
     font-family: sans-serif;
 }
 
 .title {
-    font-size: 1.2em;
+    font-size: 0.9em;
     font-weight: 900;
     text-align: center;
-    word-wrap: break-word;
+    margin: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
-    max-height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 2.4rem;
     line-height: 1.2rem;
 }
 
 .medal {
-    font-size: 3em;
+    font-size: 2.5em;
     color: goldenrod;
-    margin: 0 auto;
+    margin: 5px auto;
 }
 
 .desceription {
-    font-size: 0.9em;
+    font-size: 0.8em;
     font-weight: 500;
     text-align: center;
     margin: 0;
-    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
-    max-height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 4.3rem;
     line-height: 1.2rem;
 }
 
@@ -62,7 +71,7 @@ defineProps(['BadgeTitle', 'BadgeDescription', 'colorClass']);
     width: 100%;
     height: 100%;
     text-align: center;
-    transition: transform 0.8s;
+    transition: transform 1.4s;
     transform-style: preserve-3d;
 }
 
@@ -83,7 +92,7 @@ defineProps(['BadgeTitle', 'BadgeDescription', 'colorClass']);
     backface-visibility: hidden;
     border: 1px solid;
     border-radius: 1rem;
-    padding: 10px;
+    padding: 6px;
     box-sizing: border-box;
 }
 
