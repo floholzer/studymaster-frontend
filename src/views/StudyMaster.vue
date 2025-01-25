@@ -1,7 +1,7 @@
 <template>
     <Header/>
     <div class="main-content">
-        <AddSemester v-if="showAddSemesterDialog"/>
+        <AddSemester v-if="shouldShowSemesterDialog"/>
         <Tasklist v-else/>
     </div>
 </template>
@@ -10,6 +10,7 @@
 import Tasklist from "@/components/Tasks/Tasklist.vue";
 import Header from "@/components/Header.vue";
 import AddSemester from "@/components/Dialogs/AddSemester.vue";
+import { mapState, mapActions } from 'vuex'
 
 export default {
     name: 'StudyMaster',
@@ -23,18 +24,22 @@ export default {
             showAddSemesterDialog: false,
         };
     },
-    async computed() {
-        await this.checkSemesters();
+    computed: {
+        ...mapState(['semesters']),
+        shouldShowSemesterDialog() {
+            return this.semesters.length === 0
+        }
+    },
+    async mounted() {
+        await this.fetchSemesters()
+        if (this.semesters.length === 0) {
+            await this.$nextTick()
+            // Optional: Dialog automatisch öffnen
+            this.$store.commit('setDialog', 'addSemester')
+        }
     },
     methods: {
-        async checkSemesters() {
-            try {
-                const semesters = await this.$store.dispatch('getSemesters');
-                this.showAddSemesterDialog = semesters === undefined || semesters.length === 0;
-            } catch (error) {
-                console.error('Error retrieving Semester:', error);
-            }
-        },
+        ...mapActions(['fetchSemesters'])
     },
 };
 

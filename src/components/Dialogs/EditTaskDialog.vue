@@ -49,7 +49,6 @@ const store = useStore()
 const props = defineProps(['taskData', 'show'])
 const emit = defineEmits(['close', 'save'])
 
-const subjects = computed(() => store.getters.getSubjects)
 const editedTask = ref({...props.taskData})
 
 const formattedSubjects = computed(() => {
