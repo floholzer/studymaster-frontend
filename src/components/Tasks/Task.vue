@@ -7,6 +7,7 @@ defineProps([
     'due_date',
     'onDelete',
     'onDone',
+    'onEdit'
 ]);
 </script>
 
@@ -14,7 +15,7 @@ defineProps([
     <v-card class="task-card d-flex flex-column" outlined>
         <!-- Delete and Edit Icon -->
         <div class="control-items d-flex justify-space-between mx-1 mb-1 mt-1">
-            <v-btn small icon class="edit-icon" color="blue" @click="console.log('Task edit clicked.')">
+            <v-btn small icon class="edit-icon" color="blue" @click="onEdit(taskId)">
                 <v-icon>mdi-pencil</v-icon>
             </v-btn>
             <v-btn icon color="red" class="delete-icon" @click="onDelete(taskId)">

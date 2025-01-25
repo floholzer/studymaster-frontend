@@ -10,7 +10,6 @@
 import Tasklist from "@/components/Tasks/Tasklist.vue";
 import Header from "@/components/Header.vue";
 import AddSemester from "@/components/Dialogs/AddSemester.vue";
-import Task from "@/components/Tasks/Task.vue";
 
 export default {
     name: 'StudyMaster',

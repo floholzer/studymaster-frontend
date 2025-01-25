@@ -46,7 +46,7 @@
                         :due_date="task.dueDate"
                         :onDelete="deleteTask"
                         :onDone="openEnterReachedPointsDialog"
-
+                        :onEdit="openEditDialog"
                     />
                 </div>
             </v-card>
@@ -69,6 +69,13 @@
             @save="completeTask"
             @close="closePointsDialog"
         />
+        <EditTaskDialog
+            v-if="showEditDialog"
+            :taskData="selectedTask"
+            :show="showEditDialog"
+            @close="closeEditDialog"
+            @save="handleTaskUpdate"
+        />
     </v-container>
 </template>
 
@@ -80,10 +87,12 @@ import Badge from "@/components/Tasks/Badge.vue";
 import AddTask from "@/components/Dialogs/AddTask.vue";
 import EnterPoints from "@/components/Dialogs/EnterPoints.vue";
 import BadgeList from "@/components/Tasks/BadgeList.vue";
+import EditTaskDialog from "@/components/Dialogs/EditTaskDialog.vue";
 
 export default {
     name: "Tasklist",
     components: {
+        EditTaskDialog,
         EnterPoints,
         Badge,
         BigGreen,
@@ -94,6 +103,8 @@ export default {
     },
     data() {
         return {
+            showEditDialog: false,
+            selectedTask: null,
             selectedTaskId: null,
             showPointsDialog: false,
             showTaskDialog: false,
@@ -133,6 +144,14 @@ export default {
         },
     },
     methods: {
+        openEditDialog(taskId) {
+            this.selectedTask = this.$store.getters.getTasks.find(t => t.id === taskId);
+            this.showEditDialog = true;
+        },
+        closeEditDialog() {
+            this.showEditDialog = false;
+            this.selectedTask = null;
+        },
         closePointsDialog() {
             this.showPointsDialog = false;
         },
@@ -141,7 +160,7 @@ export default {
             this.showPointsDialog = true;
         },
         getSubjectName(subjectId) {
-            return this.subjects.find(subject => subject.id === subjectId).name;
+            return this.subjects?.find(subject => subject.id === subjectId)?.name;
         },
         openTaskDialog(subject) {
             this.selectedSubject = subject;
@@ -167,8 +186,13 @@ export default {
             await this.$store.dispatch('getProgress');
             this.showPointsDialog = false;
         },
-        async updateTask(taskId) {
-            await this.$store.dispatch('updateTask', taskId);
+        async handleTaskUpdate(updatedTask) {
+            try {
+                await this.$store.dispatch('updateTask', updatedTask);
+                await this.$store.dispatch('fetchTasks');
+            } catch (error) {
+                console.error('Error updating task:', error);
+            }
         },
         async deleteTask(taskId) {
             await this.$store.dispatch('deleteTask', taskId);
