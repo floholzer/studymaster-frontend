@@ -31,7 +31,7 @@ export default {
         }
     },
     async mounted() {
-        await this.fetchSemesters()
+        await this.getSemesters()
         if (this.semesters.length === 0) {
             await this.$nextTick()
             // Optional: Dialog automatisch öffnen
@@ -39,7 +39,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['fetchSemesters'])
+        ...mapActions(['getSemesters'])
     },
 };
 
