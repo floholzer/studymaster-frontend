@@ -69,6 +69,7 @@
             @save="completeTask"
             @close="closePointsDialog"
         />
+        <!-- Dialog für Task bearbeiten -->
         <EditTaskDialog
             v-if="showEditDialog"
             :taskData="selectedTask"
@@ -156,8 +157,12 @@ export default {
             this.showPointsDialog = false;
         },
         openEnterReachedPointsDialog(taskId) {
-            this.selectedTaskId = taskId;
-            this.showPointsDialog = true;
+            if (typeof taskId !== 'number' && typeof taskId !== 'string') {
+                console.error('Invalid taskId type:', typeof taskId)
+                return
+            }
+            this.selectedTaskId = Number(taskId) // Explizite Konvertierung
+            this.showPointsDialog = true
         },
         getSubjectName(subjectId) {
             return this.subjects?.find(subject => subject.id === subjectId)?.name;
@@ -180,8 +185,8 @@ export default {
             await this.$store.dispatch('addTask', newTask);
             this.closeTaskDialog();
         },
-        async completeTask(taskId, reachedPoints) {
-            await this.$store.dispatch('completeTask', { taskId, reachedPoints });
+        async completeTask(taskData) {
+            await this.$store.dispatch('completeTask', { taskData });
             await this.$store.dispatch('fetchTasks');
             await this.$store.dispatch('getProgress');
             this.showPointsDialog = false;
