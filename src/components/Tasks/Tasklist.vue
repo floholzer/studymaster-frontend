@@ -196,7 +196,7 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
-  width: 100%; #
+  width: 100%;
   background-color: rgba(249, 249, 249, 0.8);
 }
 </style>
