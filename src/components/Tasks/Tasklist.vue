@@ -1,6 +1,6 @@
 <template>
     <v-container fluid class="d-flex justify-center align-center">
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="10" lg="9" class="mx-auto">
             <v-card class="main pa-4">
                 <div class="semester-and-badges">
                   <h1>{{ semester.name }}</h1>
@@ -36,37 +36,46 @@
                 <!-- Fächer anzeigen -->
                 <v-row>
                     <v-col
-                        v-for="(subject, index) in subjects"
-                        :key="index"
+                        v-for="subject in subjects"
+                        :key="subject.id"
                         class="mb-4"
                     >
-                        <v-card>
-                            <v-card-title>
+                        <v-card class="subject-column">
+                            <v-card-title class="d-flex justify-space-between align-center">
                                 {{ subject.name }}
+                                <v-chip small :color="subject.status === 'completed' ? 'success' : 'primary'">
+                                    Tasks {{ subject.status }}
+                                </v-chip>
                             </v-card-title>
-                            <v-card-text>
-                                <v-btn small color="primary" @click="openTaskDialog(subject)">
+                            <div class="d-flex justify-center mb-4">
+                                <v-btn
+                                    small
+                                    color="primary"
+                                    @click="openTaskDialog(subject)"
+                                    class="mx-2 mt-2"
+                                >
+                                    <v-icon left>mdi-plus</v-icon>
                                     Add Task
                                 </v-btn>
+                            </div>
+
+
+                            <v-card-text>
+                                <!-- Tasks für dieses Subject -->
+                                <div class="task-list">
+                                    <Task
+                                        v-for="task in getTasksForSubject(subject.id)"
+                                        :key="task.id"
+                                        :task="task"
+                                        :onDelete="deleteTask"
+                                        :onDone="openEnterReachedPointsDialog"
+                                        :onEdit="openEditDialog"
+                                    />
+                                </div>
                             </v-card-text>
                         </v-card>
                     </v-col>
                 </v-row>
-
-                <!-- Task-Grid -->
-                <v-divider class="mt-2"></v-divider>
-                <i style="color: gray;" v-if="openTasks.length===0">No tasks created yet...</i>
-
-                <div class="task-grid mx-6 my-6">
-                    <Task class="task"
-                        v-for="task in openTasks"
-                        :key="task.id"
-                        :task="task"
-                        :onDelete="deleteTask"
-                        :onDone="openEnterReachedPointsDialog"
-                        :onEdit="openEditDialog"
-                    />
-                </div>
             </v-card>
 
         </v-col>
@@ -143,11 +152,8 @@ export default {
       this.subjects = this.$store.getters.getSubjects;
     },
     computed: {
-        openTasks() {
-            const tasks = this.$store.getters.getTasks;
-            return tasks.filter(task => {
-                return task.status !== "completed";
-            });
+        tasks() {
+            return this.$store.getters.getTasks;
         },
         semesterStore() {
             return this.$store.getters.getSemesters;
@@ -157,6 +163,12 @@ export default {
         },
     },
     methods: {
+        getTasksForSubject(subjectId) {
+            return this.tasks.filter(task =>
+                task.subjectId === subjectId &&
+                task.status !== "completed"
+            );
+        },
         openEditDialog(task) {
             this.selectedTask = task  // Direkt das übergebene Task-Objekt verwenden
             this.showEditDialog = true
@@ -220,7 +232,7 @@ export default {
     margin-bottom: 120px;
 }
 
-.task-grid {
+.task-list {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
