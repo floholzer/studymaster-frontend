@@ -58,29 +58,16 @@
 
 
                 <!-- Add New Subject -->
-                <v-card-text>
-                    <v-form @submit.prevent="addSubject">
-                        <v-card-title class="text-h6">Add New Subject</v-card-title>
-
-                        <v-text-field
-                            v-model="newSubject.name"
-                            label="Subject Name"
-                            required
-                            outlined
-                            class="mb-4"
-                        ></v-text-field>
-
-                        <v-select
-                            v-model="newSubject.status"
-                            :items="['open', 'completed']"
-                            label="Status"
-                            outlined
-                            class="mb-4"
-                        ></v-select>
-
-                        <v-btn type="submit" color="primary" depressed>Add Subject</v-btn>
-                    </v-form>
-                </v-card-text>
+                <v-card-actions>
+                    <v-btn
+                        color="primary"
+                        @click="showAddDialog = true"
+                        class="mx-4 mb-4"
+                    >
+                        <v-icon left>mdi-plus</v-icon>
+                        Add Subject
+                    </v-btn>
+                </v-card-actions>
             </v-card>
 
             <!-- Edit Subject Dialog -->
@@ -116,6 +103,39 @@
             </v-dialog>
         </v-container>
     </div>
+
+    <!-- Add Subject Dialog -->
+    <v-dialog v-model="showAddDialog" max-width="500">
+        <v-card>
+            <v-card-title class="text-h5">Add New Subject</v-card-title>
+            <v-card-text>
+                <v-form @submit.prevent="addSubject" ref="addForm">
+                    <v-text-field
+                        v-model="newSubject.name"
+                        label="Subject Name"
+                        required
+                        outlined
+                        class="mb-4"
+                        :rules="[v => !!v || 'Name is required']"
+                    ></v-text-field>
+
+                    <v-select
+                        v-model="newSubject.status"
+                        :items="['open', 'completed']"
+                        label="Status"
+                        outlined
+                        class="mb-4"
+                        :rules="[v => !!v || 'Status is required']"
+                    ></v-select>
+
+                    <div class="d-flex justify-end">
+                        <v-btn @click="showAddDialog = false" class="mr-2">Cancel</v-btn>
+                        <v-btn type="submit" color="primary">Add Subject</v-btn>
+                    </div>
+                </v-form>
+            </v-card-text>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
@@ -127,6 +147,7 @@ export default {
     data() {
         return {
             currentSemester: null,
+            showAddDialog: false,
             newSubject: {
                 name: '',
                 status: 'open',
@@ -154,16 +175,28 @@ export default {
     methods: {
         ...mapActions(['getSemesters', 'getSubjects', 'updateSemester', 'addSubject', 'updateSubject', 'deleteSubject']),
 
+
         async updateSemester() {
             await this.$store.dispatch('updateSemester', this.currentSemester);
             alert('Semester updated successfully!');
         },
 
         async addSubject() {
-            this.newSubject.semesterId = this.currentSemester.id;
-            await this.$store.dispatch('addSubject', this.newSubject);
-            this.newSubject = { name: '', status: 'open', semesterId: null };
-            alert('Subject added successfully!');
+            if (this.$refs.addForm.validate()) {
+                try {
+                    this.newSubject.semesterId = this.currentSemester.id;
+                    await this.$store.dispatch('addSubject', this.newSubject);
+                    this.showAddDialog = false;
+                    this.newSubject = {
+                        name: '',
+                        status: 'open',
+                        semesterId: null
+                    };
+                    this.$refs.addForm.resetValidation();
+                } catch (error) {
+                    console.error("Error adding subject:", error);
+                }
+            }
         },
 
         editSubject(subject) {
@@ -173,13 +206,11 @@ export default {
         async updateSubject() {
             await this.$store.dispatch('updateSubject', this.editingSubject);
             this.editingSubject = null;
-            alert('Subject updated successfully!');
         },
 
         async deleteSubject(subjectId) {
             if (confirm('Are you sure you want to delete this subject?')) {
                 await this.$store.dispatch('deleteSubject', subjectId);
-                alert('Subject deleted successfully!');
             }
         },
 
