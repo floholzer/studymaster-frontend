@@ -1,9 +1,10 @@
 <script setup>
-defineProps(['progressPercentage', 'progressAbsolute']);
+defineProps(['progress']);
 </script>
 
 <template class="progressbar">
-    <v-progress-linear :model-value="progressPercentage" color="green" height="20">
+    <v-progress-linear :model-value="progress" color="green" height="20">
+        {{ progress }}%
     </v-progress-linear>
 </template>
 

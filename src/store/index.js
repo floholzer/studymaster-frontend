@@ -278,6 +278,17 @@ const store = new createStore({
             }
         },
 
+        async markSubjectAsCompleted({ commit }, subjectId) {
+            try {
+                const response = await axios.post(`${api_url}/subjects/${subjectId}/complete`);
+                if (response.status === 200) {
+                    commit('SET_SUBJECTS', this.state.subjects.map(s => s.id === subjectId ? { ...s, status: 'completed' } : s));
+                }
+            } catch (error) {
+                handleApiError(this, error);
+            }
+        },
+
         async deleteSubject({ commit }, subjectId) { // no backend endpoint yet!
             try {
                 const response = await axios.delete(`${api_url}/subjects/${subjectId}`);

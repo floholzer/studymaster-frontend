@@ -29,9 +29,8 @@
                 </div>
                 <v-divider class="mb-4"></v-divider>
                 <!-- Fortschrittsanzeige -->
-                <ProgressBar
-                    :progressAbsolute="progressAbsolute"
-                    :progress-percentage="progressPercentage"
+                <ProgressBar class="mb-4"
+                    :progress="progress"
                 />
 
                 <!-- Fächer anzeigen -->
@@ -153,10 +152,7 @@ export default {
         semesterStore() {
             return this.$store.getters.getSemesters;
         },
-        progressAbsolute() {
-            return this.$store.getters.getProgress;
-        },
-        progressPercentage() {
+        progress() {
             return this.$store.getters.getProgress;
         },
     },

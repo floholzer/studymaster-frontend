@@ -45,6 +45,14 @@
                                 <v-list-item-subtitle>{{ subject.status }}</v-list-item-subtitle>
                             </div>
                             <div>
+                                <v-btn
+                                    class="mx-2 my-1"
+                                    icon
+                                    @click="markSubjectCompleted(subject.id)"
+                                    color="success"
+                                >
+                                    <v-icon>mdi-check</v-icon>
+                                </v-btn>
                                 <v-btn class="mx-2 my-1" icon @click="editSubject(subject)">
                                     <v-icon color="grey">mdi-pencil</v-icon>
                                 </v-btn>
@@ -173,8 +181,25 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['getSemesters', 'getSubjects', 'updateSemester', 'addSubject', 'updateSubject', 'deleteSubject']),
+        ...mapActions([
+            'getSemesters',
+            'getSubjects',
+            'updateSemester',
+            'addSubject',
+            'updateSubject',
+            'deleteSubject',
+            'markSubjectAsCompleted'
+        ]),
 
+        async markSubjectCompleted(subjectId) {
+            if (confirm('Mark this subject as completed?')) {
+                try {
+                    await this.markSubjectAsCompleted(subjectId);
+                } catch (error) {
+                    console.error("Error marking subject as completed:", error);
+                }
+            }
+        },
 
         async updateSemester() {
             await this.$store.dispatch('updateSemester', this.currentSemester);
