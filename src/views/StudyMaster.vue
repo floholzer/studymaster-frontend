@@ -19,29 +19,21 @@ export default {
         Tasklist,
         AddSemester,
     },
-    data() {
-        return {
-            showAddSemesterDialog: false,
-        };
-    },
     computed: {
         ...mapState(['semesters']),
         shouldShowSemesterDialog() {
-            return this.semesters.length === 0
+            // Zeige Dialog wenn keine Semester existieren ODER alle Semester abgeschlossen sind
+            return this.semesters.length === 0 ||
+                this.semesters.every(s => s.status === 'completed')
         }
     },
     async mounted() {
         await this.getSemesters()
-        if (this.semesters.length === 0) {
-            await this.$nextTick()
-            this.showAddSemesterDialog = true;
-        }
     },
     methods: {
         ...mapActions(['getSemesters'])
     },
 };
-
 </script>
 
 <style scoped>
