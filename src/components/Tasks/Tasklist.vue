@@ -30,7 +30,7 @@
                 <v-divider class="mb-4"></v-divider>
                 <!-- Fortschrittsanzeige -->
                 <ProgressBar class="mb-4"
-                    :progress="progress"
+                    :progress="progress/subjects.length"
                 />
 
                 <!-- Fächer anzeigen -->
@@ -44,11 +44,12 @@
                             <v-card-title class="d-flex justify-space-between align-center">
                                 {{ subject.name }}
                                 <v-chip small :color="subject.status === 'completed' ? 'success' : 'primary'">
-                                    Tasks {{ subject.status }}
+                                    {{ subject.status }}
                                 </v-chip>
                             </v-card-title>
                             <div class="d-flex justify-center mb-4">
                                 <v-btn
+                                    v-if="subject.status !== 'completed'"
                                     small
                                     color="primary"
                                     @click="openTaskDialog(subject)"
