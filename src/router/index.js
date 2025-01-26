@@ -50,6 +50,12 @@ const routes = [
         name: 'studymaster',
         component: () => import('@/views/StudyMaster.vue'),
         meta: { title: 'StudyMaster | StudyMaster', requiresAuth: true },
+    },
+    {
+        path: '/semester-management',
+        name: 'semester-management',
+        component: () => import('@/views/SemesterManagement.vue'),
+        meta: { title: 'StudyMaster | Semester Management', requiresAuth: true },
     }
 ];
 

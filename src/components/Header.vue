@@ -12,6 +12,9 @@
                 <router-link to="/studymaster" style="text-decoration: none; color: inherit;">
                     <v-list-item prepend-icon="mdi-format-list-checks" title="Tasklist"></v-list-item>
                 </router-link>
+                <router-link to="/semester-management" style="text-decoration: none; color: inherit;">
+                    <v-list-item prepend-icon="mdi-book-open-variant" title="Edit Semester"></v-list-item>
+                </router-link>
                 <router-link to="/profile" style="text-decoration: none; color: inherit;">
                     <v-list-item prepend-icon="mdi-account" title="Profile"></v-list-item>
                 </router-link>

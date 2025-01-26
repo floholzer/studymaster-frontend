@@ -221,6 +221,17 @@ const store = new createStore({
             }
         },
 
+        async updateSemester({ commit }, semester) { // no backend endpoint yet!
+            try {
+                const response = await axios.put(`${api_url}/semesters/${semester.id}`, semester);
+                if (response.status === 200) {
+                    commit('SET_SEMESTERS', this.state.semesters.map(s => s.id === semester.id ? semester : s));
+                }
+            } catch (error) {
+                handleApiError(this, error);
+            }
+        },
+
         // ##### SUBJECTS ##### //
         /*
         Subject-Objekt:
@@ -256,15 +267,23 @@ const store = new createStore({
                 handleApiError(this, error);
             }
         },
-
-        async fetchTasks({commit}) {
+        async updateSubject({ commit }, subject) { // no backend endpoint yet!
             try {
-                const user = store.getters.getUser;
-                const response = await axios.get(api_url+'/tasks/' + user.id.toString());
-                if (response.data.length > 0) {
-                    commit('SET_TASKS', response.data);
+                const response = await axios.put(`${api_url}/subjects/${subject.id}`, subject);
+                if (response.status === 200) {
+                    commit('SET_SUBJECTS', this.state.subjects.map(s => s.id === subject.id ? subject : s));
                 }
+            } catch (error) {
+                handleApiError(this, error);
+            }
+        },
 
+        async deleteSubject({ commit }, subjectId) { // no backend endpoint yet!
+            try {
+                const response = await axios.delete(`${api_url}/subjects/${subjectId}`);
+                if (response.status === 200) {
+                    commit('SET_SUBJECTS', this.state.subjects.filter(s => s.id !== subjectId));
+                }
             } catch (error) {
                 handleApiError(this, error);
             }
@@ -287,6 +306,19 @@ const store = new createStore({
             pointsEarned: 5,
             subjectId: 1,
          */
+        async fetchTasks({commit}) {
+            try {
+                const user = store.getters.getUser;
+                const response = await axios.get(api_url+'/tasks/' + user.id.toString());
+                if (response.data.length > 0) {
+                    commit('SET_TASKS', response.data);
+                }
+
+            } catch (error) {
+                handleApiError(this, error);
+            }
+        },
+
         async addTask({commit}, task) {
             if (!task) {
                 console.error('Task is empty');
