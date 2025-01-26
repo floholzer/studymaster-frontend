@@ -54,7 +54,7 @@ const editedTask = ref({...props.taskData})
 const formattedSubjects = computed(() => {
     return store.getters.getSubjects.map(subject => ({
         id: subject.id,
-        title: `${subject.name} (${subject.ects} ECTS)`
+        title: `${subject.name}`
     }))
 })
 

@@ -7,7 +7,6 @@ function handleApiError(store, error) {
     if (error.response && error.response.status === 401) {
         // Session beenden, wenn ein 401-Fehler auftritt
         store.dispatch('logout');
-        // Optional: Benutzer auf die Login-Seite weiterleiten
         if (window.location.pathname !== '/login') {
             window.location.href = '/login';
         }
@@ -163,6 +162,17 @@ const store = new createStore({
                 }
             }
         },
+        // ##### USER ##### //
+        /*
+        User-Objekt:
+            id: 1,
+            username: "test",
+            email: "max.mustermann@email.com",
+            password: "password",
+            first_name: "Max",
+            last_name: "Mustermann",
+            is_admin: false
+         */
 
         async updateUser({commit}, userData) {
             try {
@@ -174,6 +184,15 @@ const store = new createStore({
                 handleApiError(this, error);
             }
         },
+        // ##### SEMESTERS ##### //
+        /*
+        Semester-Objekt:
+            id: 1,
+            userId: 1,
+            name: "WS 2021/22",
+            status: "open" oder "completed",
+            createdAt: "2022-03-31"
+         */
 
         async getSemesters({commit}) {
             try {
@@ -192,15 +211,6 @@ const store = new createStore({
                 console.error('Semester is empty');
                 return;
             }
-            /*
-            Semester-Objekt:
-            {
-                id: 1,
-                userId: 1,
-                name: "WS 2021/22",
-                ects: 30,
-                createdAt: "2022-03-31"
-             */
             try {
                 const response = await axios.post(api_url+'/semesters', semester);
                 if (response.status === 200) {
@@ -211,6 +221,17 @@ const store = new createStore({
             }
         },
 
+        // ##### SUBJECTS ##### //
+        /*
+        Subject-Objekt:
+            id: 1,
+            semesterId: 1,
+            name: "CLCO",
+            status: "open" oder "completed",
+            createdAt: "2022-03-31",
+            userId: 1,
+            award: "keinen"
+        */
         async getSubjects({commit}, semesterId) {
             try {
                 const response = await axios.get(api_url+'/subjects/' + semesterId.toString());
@@ -226,15 +247,6 @@ const store = new createStore({
                 console.error('Subject is empty');
                 return;
             }
-            /* Subject-Objekt:
-            {
-                id: 1,
-                semesterId: 1,
-                name: "CLCO",
-                ects: 30,
-                created_at: "2022-03-31",
-                userId: 1
-            */
             try {
                 const response = await axios.post(api_url+'/subjects', subject);
                 if (response.status === 200) {
@@ -257,7 +269,24 @@ const store = new createStore({
                 handleApiError(this, error);
             }
         },
-
+        // ##### TASKS ##### //
+        /*
+        Task-Objekt:
+            id: 1,
+            userId: 1,
+            title: "Task 1",
+            description: "Description",
+            dueDate: "2022-03-31",
+            status: "open" oder "completed",
+            priority: "low" oder "medium" oder "high",
+            ects: 5, Not ins Use!
+            pointsPerSubmission: 5,
+            totalSubmissions: 1,
+            completedSubmissions: 1,
+            createdAt: "2022-03-31",
+            pointsEarned: 5,
+            subjectId: 1,
+         */
         async addTask({commit}, task) {
             if (!task) {
                 console.error('Task is empty');
@@ -307,18 +336,28 @@ const store = new createStore({
                 console.error('TaskData is empty');
                 return;
             }
-            if (taskData.reachedPoints < 0) {
-                console.error('Reached points must be greater than 0');
+            if (taskData.pointsEarned < 0) {
+                console.error('Earned must not be negative');
                 return;
             }
             try {
-                await axios.post(api_url+'/tasks/'+taskData.taskId+"/complete", {
-                    ects: taskData.reachedPoints
-                });
+                await axios.post(api_url+'/tasks/'+taskData.taskId+"/complete", taskData);
             } catch (error) {
                 handleApiError(this, error);
             }
         },
+
+        // ##### PROGRESS ##### //
+        /*
+        Progress-Objekt:
+            id: 1,
+            user_id: 1,
+            task_id: 10,
+            progress_percentage: 50,
+            points_earned: 5,
+            level: 1,
+            updated_at: "2022-03-31",
+         */
 
         async getProgress({commit}) {
             try {
@@ -330,7 +369,21 @@ const store = new createStore({
                 handleApiError(this, error);
             }
         },
+        // ##### BADGES ##### //
+        /*
+        Badge-Objekt:
+            id: 1,
+            name: "Beginner",
+            description: "Awarded for earning 10 points",
+            points_required: 10,
+            badge_type: "standard" oder "semester_completion",
 
+        UserBadge Table:
+            id: 1,
+            user_id: 1,
+            badge_id: 1,
+            awarded_at: "2022-03-31",
+         */
         async fetchBadges({ commit }) {
             try {
                 // durch API-Aufruf ersetzen

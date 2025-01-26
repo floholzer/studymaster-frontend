@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <v-divider class="mb-4"></v-divider>
-                <!-- Fortschrittsanzeige für ECTS-Punkte -->
+                <!-- Fortschrittsanzeige -->
                 <ProgressBar
                     :progressAbsolute="progressAbsolute"
                     :progress-percentage="progressPercentage"
@@ -43,7 +43,7 @@
                     >
                         <v-card>
                             <v-card-title>
-                                {{ subject.name }} ({{ subject.ects }} ECTS)
+                                {{ subject.name }}
                             </v-card-title>
                             <v-card-text>
                                 <v-btn small color="primary" @click="openTaskDialog(subject)">
@@ -65,9 +65,9 @@
                         :taskId="task.id"
                         :taskName="task.title"
                         :subject="getSubjectName(task.subjectId)"
-                        :ects="task.ects"
                         :description="task.description"
                         :due_date="task.dueDate"
+                        :pointsPerSubmission="task.pointsPerSubmission"
                         :onDelete="deleteTask"
                         :onDone="openEnterReachedPointsDialog"
                         :onEdit="openEditDialog"
@@ -134,7 +134,7 @@ export default {
             semester: {
                 id: null,
                 name: 'Failed to load semester',
-                ects: 99,
+                status: "open",
                 created_at: null,
             },
             subjects: [],
@@ -159,7 +159,7 @@ export default {
             return this.$store.getters.getSemesters;
         },
         progressAbsolute() {
-            return (this.$store.getters.getProgress/100)*30;
+            return this.$store.getters.getProgress;
         },
         progressPercentage() {
             return this.$store.getters.getProgress;

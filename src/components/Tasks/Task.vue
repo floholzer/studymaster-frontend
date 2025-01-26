@@ -5,6 +5,7 @@ defineProps([
     'subject',
     'description',
     'due_date',
+    'pointsPerSubmission',
     'onDelete',
     'onDone',
     'onEdit'
@@ -27,6 +28,7 @@ defineProps([
         <div>until {{ due_date }}</div>
         <small class="task-subject">{{ subject }}</small>
         <div>{{ description }}</div>
+        <div>{{ pointsPerSubmission }} Points</div>
 
         <!-- Done Button -->
         <v-btn class="btn-done" @click="onDone(taskId)">

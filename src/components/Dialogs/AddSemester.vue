@@ -14,7 +14,7 @@
 
                     <!-- Fächer hinzufügen -->
                     <v-divider class="my-4"></v-divider>
-                    <v-subheader>Add Subjects</v-subheader>
+                    <h3>Add Subjects</h3>
                     <v-row v-for="(subject, index) in subjects" :key="index" align="center">
                         <v-col cols="5">
                             <v-text-field
@@ -24,24 +24,13 @@
                                 required
                             ></v-text-field>
                         </v-col>
-                        <v-col cols="5">
-                            <v-text-field
-                                v-model="subject.ects"
-                                label="ECTS"
-                                type="number"
-                                :rules="[v => v > 0 || 'ECTS must be greater than 0']"
-                                required
-                            ></v-text-field>
-                        </v-col>
-                        <!-- Temporary removed button TODO update backend to be able to send multiple subjects at once
                         <v-col cols="2">
                             <v-btn icon @click="removeSubject(index)">
                                 <v-icon color="red">mdi-delete</v-icon>
                             </v-btn>
                         </v-col>
-                        -->
                     </v-row>
-                    <!--<v-btn text @click="addSubject" prepend-icon="mdi-playlist-plus">add Subject</v-btn>-->
+                    <v-btn @click="addSubject" prepend-icon="mdi-playlist-plus">add Subject</v-btn>
                 </v-form>
             </v-card-text>
             <v-card-actions>
@@ -62,13 +51,13 @@ export default {
                 name: '',
             },
             subjects: [
-                { name: '', ects: null },
+                { name: ''},
             ],
         };
     },
     methods: {
         addSubject() {
-            this.subjects.push({ name: '', ects: null });
+            this.subjects.push({ name: '' });
         },
         removeSubject(index) {
             this.subjects.splice(index, 1);
@@ -76,20 +65,20 @@ export default {
         async saveData() {
             if (this.$refs.form.validate()) {
 
-                const ects = this.subjects.reduce((acc, subject) => acc + subject.ects, 0);
-
+                // Add semester
                 const newSemester = {
                     userId: this.$store.getters.getUser.id,
                     name: this.semester.name,
-                    ects: ects,
+                    createdAt: new Date().toISOString(),
                 };
                 await this.$store.dispatch('addSemester', newSemester);
 
+                // Add subjects
                 for(const subject of this.subjects) {
                     await this.$store.dispatch('addSubject', {
                         semesterId: this.$store.getters.getSemesters[0].id,
                         name: subject.name,
-                        ects: subject.ects,
+                        createdAt: new Date().toISOString(),
                         userId: this.$store.getters.getUser.id
                     });
                 }

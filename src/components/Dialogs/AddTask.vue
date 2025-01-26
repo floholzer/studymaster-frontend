@@ -25,10 +25,13 @@
                         label="Priority"
                     ></v-select>
                     <v-text-field
-                        v-model="task.maxPoints"
+                        v-model="task.pointsPerSubmission"
                         label="Max Points"
                         type="number"
-                        :rules="[v => !!v || 'Max Points are required']"
+                        :rules="[
+                            v => !!v || 'Max Points are required',
+                            v => v >= 0 || 'Max Points must be greater or equal to 0'
+                            ]"
                         required
                     ></v-text-field>
                 </v-form>
@@ -53,9 +56,9 @@
                 task: {
                     title: "",
                     description: "",
-                    dueDate: "",
+                    dueDate: null,
                     priority: "Medium",
-                    maxPoints: null,
+                    pointsPerSubmission: 0,
                 },
             };
         },

@@ -34,8 +34,7 @@ export default {
         await this.getSemesters()
         if (this.semesters.length === 0) {
             await this.$nextTick()
-            // Optional: Dialog automatisch öffnen
-            this.$store.commit('setDialog', 'addSemester')
+            this.showAddSemesterDialog = true;
         }
     },
     methods: {

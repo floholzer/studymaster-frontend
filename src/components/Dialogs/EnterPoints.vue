@@ -8,10 +8,10 @@
             <v-card-text>
                 <v-form ref="form" v-model="valid">
                     <v-text-field
-                        v-model="reachedPoints"
+                        v-model="pointsEarned"
                         label="Reached Points"
                         type="number"
-                        :rules="[v => v >= 0 || 'Points must be positive']"
+                        :rules="[v => v > 0 || 'Points must be positive']"
                         required
                     ></v-text-field>
                 </v-form>
@@ -38,7 +38,7 @@ export default {
         return {
             dialog: true,
             valid: false,
-            reachedPoints: null,
+            pointsEarned: 0,
         };
     },
     methods: {
@@ -51,7 +51,7 @@ export default {
                 this.dialog = false;
                 this.$emit('save', {
                     taskId: this.taskId,
-                    reachedPoints: this.reachedPoints,
+                    pointsEarned: this.pointsEarned,
                 });
             }
         },
