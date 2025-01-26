@@ -5,32 +5,17 @@
                 <div class="semester-and-badges">
                   <h1>{{ semester.name }}</h1>
                     <div class="badges-inline">
-                      <Badge
-                          BadgeTitle="Rookie"
-                          BadgeDescription="Erste LV abgeschlossen"
-                          colorClass="wood"
-                      />
-                      <Badge
-                          BadgeTitle="Bronze"
-                          BadgeDescription="Completed 10 tasks!"
-                          colorClass="bronze"
-                      />
-                      <Badge
-                          BadgeTitle="Silver Scholar"
-                          BadgeDescription="Achieved 15 ECTS!"
-                          colorClass="silver"
-                      />
-                      <Badge
-                          BadgeTitle="Overachiever"
-                          BadgeDescription="Get 60ECTS in one semester"
-                          colorClass="gold"
-                      />
+                        <Badge
+                            v-for="badge in badges"
+                            :key="badge.id"
+                            :badge="badge"
+                        />
                     </div>
                 </div>
                 <v-divider class="mb-4"></v-divider>
                 <!-- Fortschrittsanzeige -->
                 <ProgressBar class="mb-4"
-                    :progress="progress/subjects.length"
+                    :progress="(progress/subjects.length)*100"
                 />
 
                 <!-- Fächer anzeigen -->
@@ -151,10 +136,14 @@ export default {
       this.semester = this.semesterStore[0];
       await this.$store.dispatch('getSubjects', this.semester.id);
       this.subjects = this.$store.getters.getSubjects;
+      await this.$store.dispatch('fetchBadges');
     },
     computed: {
         tasks() {
             return this.$store.getters.getTasks;
+        },
+        badges() {
+            return this.$store.getters.getBadges;
         },
         semesterStore() {
             return this.$store.getters.getSemesters;

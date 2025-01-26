@@ -429,13 +429,10 @@ const store = new createStore({
          */
         async fetchBadges({ commit }) {
             try {
-                // durch API-Aufruf ersetzen
-                const exampleBadges = [
-                    { title: "First Semester", description: "Completed your first semester!" },
-                    { title: "Overachiever", description: "Earned 30+ ECTS in one semester!" },
-                    { title: "Task Master", description: "Completed 10 tasks!" },
-                ];
-                commit("SET_BADGES", exampleBadges);
+                const response = await axios.get(`${api_url}/user_badges/${store.getters.getUser.id}`);
+                if (response.status === 200) {
+                    commit("SET_BADGES", response.data);
+                }
             } catch (error) {
                 console.error("Error fetching badges:", error);
             }

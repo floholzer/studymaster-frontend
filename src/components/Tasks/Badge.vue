@@ -1,16 +1,18 @@
 <script setup>
-defineProps(['BadgeTitle', 'BadgeDescription', 'colorClass']);
+defineProps([
+    'badge'
+]);
 </script>
 
 <template>
     <div class="flip-card mx-1 my-1">
         <div class="flip-card-inner">
-            <div class="flip-card-front" :class="colorClass">
-                <p class="title">{{ BadgeTitle}}</p>
+            <div class="flip-card-front" :class="badge.badgeType">
+                <p class="title">{{ badge.name}}</p>
                 <v-icon class="medal">mdi-medal</v-icon>
             </div>
-            <div class="flip-card-back" :class="colorClass + '-back'">
-                <p class="desceription">{{ BadgeDescription }}</p>
+            <div class="flip-card-back" :class="badge.badgeTyp + '-back'">
+                <p class="desceription">{{ badge.description }}</p>
             </div>
         </div>
     </div>
@@ -105,30 +107,30 @@ defineProps(['BadgeTitle', 'BadgeDescription', 'colorClass']);
   transform: rotateY(180deg);
 }
 
-.wood {
+.standard {
   background: #D2B48C;
   border-color: #8B4513;
 }
 
-.wood-back {
+.standard-back {
   background: #D2B48C;
 }
 
-.bronze {
+.Intermediate {
   background: #CD7F32;
   border-color: #8C6239;
 }
 
-.bronze-back {
+.Intermediate-back {
   background: #CD7F32;
 }
 
-.silver {
+.Expert {
   background: silver;
   border-color: darkgrey;
 }
 
-.silver-back {
+.Expert-back {
   background: silver;
 }
 
