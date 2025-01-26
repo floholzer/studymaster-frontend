@@ -15,7 +15,7 @@
                 <v-divider class="mb-4"></v-divider>
                 <!-- Fortschrittsanzeige -->
                 <ProgressBar class="mb-4"
-                    :progress="(progress/subjects.length)*100"
+                    :progress="Math.round((progress/subjects.length)*100)"
                 />
 
                 <!-- Fächer anzeigen -->
@@ -199,12 +199,14 @@ export default {
             })
             await this.$store.dispatch('fetchTasks')
             await this.$store.dispatch('getProgress')
+            await this.$store.dispatch('fetchBadges');
             this.showPointsDialog = false
         },
         async handleTaskUpdate(updatedTask) {
             try {
                 await this.$store.dispatch('updateTask', updatedTask);
                 await this.$store.dispatch('fetchTasks');
+                await this.$store.dispatch('fetchBadges');
             } catch (error) {
                 console.error('Error updating task:', error);
             }

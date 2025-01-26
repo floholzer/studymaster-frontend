@@ -7,11 +7,11 @@ defineProps([
 <template>
     <div class="flip-card mx-1 my-1">
         <div class="flip-card-inner">
-            <div class="flip-card-front" :class="badge.badgeType">
+            <div class="flip-card-front" :class="badge.name">
                 <p class="title">{{ badge.name}}</p>
                 <v-icon class="medal">mdi-medal</v-icon>
             </div>
-            <div class="flip-card-back" :class="badge.badgeTyp + '-back'">
+            <div class="flip-card-back" :class="badge.name + '-back'">
                 <p class="desceription">{{ badge.description }}</p>
             </div>
         </div>
@@ -107,12 +107,12 @@ defineProps([
   transform: rotateY(180deg);
 }
 
-.standard {
+.Beginner {
   background: #D2B48C;
   border-color: #8B4513;
 }
 
-.standard-back {
+.Beginner-back {
   background: #D2B48C;
 }
 
