@@ -1,37 +1,56 @@
 <script setup>
-defineProps([
-    'taskId',
-    'taskName',
-    'subject',
-    'description',
-    'due_date',
-    'pointsPerSubmission',
-    'onDelete',
-    'onDone',
-    'onEdit'
-]);
+import { useStore } from 'vuex';
+import {computed} from "vue";
+const store = useStore();
+const props = defineProps({
+    task: {
+        type: Object,
+        required: true
+    },
+    subjects: {
+        type: Array,
+        default: () => []
+    },
+    onDelete: {
+        type: Function,
+        required: true
+    },
+    onDone: {
+        type: Function,
+        required: true
+    },
+    onEdit: {
+        type: Function,
+        required: true
+    }
+});
+
+const subjectName = computed(() => {
+    const allSubjects = store.getters.getSubjects;
+    return allSubjects.find(s => s.id === props.task.subjectId)?.name || 'Unknown Subject';
+});
 </script>
 
 <template>
     <v-card class="task-card d-flex flex-column" outlined>
         <!-- Delete and Edit Icon -->
         <div class="control-items d-flex justify-space-between mx-1 mb-1 mt-1">
-            <v-btn small icon class="edit-icon" color="blue" @click="onEdit(taskId)">
+            <v-btn small icon class="edit-icon" color="blue" @click="onEdit(task)">
                 <v-icon>mdi-pencil</v-icon>
             </v-btn>
-            <v-btn icon color="red" class="delete-icon" @click="onDelete(taskId)">
+            <v-btn icon color="red" class="delete-icon" @click="onDelete(task)">
                 <v-icon small>mdi-close</v-icon>
             </v-btn>
         </div>
         <v-divider></v-divider>
-        <div class="task-name">{{ taskName }}</div>
-        <div>until {{ due_date }}</div>
-        <small class="task-subject">{{ subject }}</small>
-        <div>{{ description }}</div>
-        <div>{{ pointsPerSubmission }} Points</div>
+        <div class="task-name">{{ task.title }}</div>
+        <div>until {{ task.dueDate }}</div>
+        <small class="task-subject">{{ subjectName }}</small>
+        <!--<div>{{ task.description }}</div>-->
+        <div>{{ task.pointsPerSubmission }} Points</div>
 
         <!-- Done Button -->
-        <v-btn class="btn-done" @click="onDone(taskId)">
+        <v-btn class="btn-done" @click="onDone(task)">
             Done
             <v-icon right>mdi-check</v-icon>
         </v-btn>

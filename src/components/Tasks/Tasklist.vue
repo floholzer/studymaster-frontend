@@ -60,14 +60,9 @@
 
                 <div class="task-grid mx-6 my-6">
                     <Task class="task"
-                        v-for="(task) in openTasks"
+                        v-for="task in openTasks"
                         :key="task.id"
-                        :taskId="task.id"
-                        :taskName="task.title"
-                        :subject="getSubjectName(task.subjectId)"
-                        :description="task.description"
-                        :due_date="task.dueDate"
-                        :pointsPerSubmission="task.pointsPerSubmission"
+                        :task="task"
                         :onDelete="deleteTask"
                         :onDone="openEnterReachedPointsDialog"
                         :onEdit="openEditDialog"
@@ -86,7 +81,7 @@
         <!-- Dialog für erreichte Punkte -->
         <EnterPoints
             v-if="showPointsDialog"
-            :taskId="selectedTaskId"
+            :task="selectedTask"
             @save="completeTask"
             @close="closePointsDialog"
         />
@@ -166,9 +161,9 @@ export default {
         },
     },
     methods: {
-        openEditDialog(taskId) {
-            this.selectedTask = this.$store.getters.getTasks.find(t => t.id === taskId);
-            this.showEditDialog = true;
+        openEditDialog(task) {
+            this.selectedTask = task  // Direkt das übergebene Task-Objekt verwenden
+            this.showEditDialog = true
         },
         closeEditDialog() {
             this.showEditDialog = false;
@@ -177,16 +172,9 @@ export default {
         closePointsDialog() {
             this.showPointsDialog = false;
         },
-        openEnterReachedPointsDialog(taskId) {
-            if (typeof taskId !== 'number' && typeof taskId !== 'string') {
-                console.error('Invalid taskId type:', typeof taskId)
-                return
-            }
-            this.selectedTaskId = Number(taskId) // Explizite Konvertierung
+        openEnterReachedPointsDialog(task) {
+            this.selectedTask = task  // Task-Objekt statt ID speichern
             this.showPointsDialog = true
-        },
-        getSubjectName(subjectId) {
-            return this.subjects?.find(subject => subject.id === subjectId)?.name;
         },
         openTaskDialog(subject) {
             this.selectedSubject = subject;
@@ -206,11 +194,14 @@ export default {
             await this.$store.dispatch('addTask', newTask);
             this.closeTaskDialog();
         },
-        async completeTask(taskData) {
-            await this.$store.dispatch('completeTask', { taskData });
-            await this.$store.dispatch('fetchTasks');
-            await this.$store.dispatch('getProgress');
-            this.showPointsDialog = false;
+        async completeTask({ task, pointsEarned }) {
+            await this.$store.dispatch('completeTask', {
+                taskId: task.id,
+                pointsEarned: pointsEarned
+            })
+            await this.$store.dispatch('fetchTasks')
+            await this.$store.dispatch('getProgress')
+            this.showPointsDialog = false
         },
         async handleTaskUpdate(updatedTask) {
             try {
@@ -220,8 +211,8 @@ export default {
                 console.error('Error updating task:', error);
             }
         },
-        async deleteTask(taskId) {
-            await this.$store.dispatch('deleteTask', taskId);
+        async deleteTask(task) {
+            await this.$store.dispatch('deleteTask', task.id);
         },
     },
 };

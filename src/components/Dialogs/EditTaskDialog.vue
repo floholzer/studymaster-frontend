@@ -7,6 +7,7 @@
                     <v-text-field
                         v-model="editedTask.title"
                         label="Task Name"
+                        :rules="[v => !!v || 'Name is required']"
                         required
                     ></v-text-field>
 
@@ -21,13 +22,15 @@
                         item-text="title"
                         item-value="id"
                         label="Subject"
+                        :rules="[v => !!v || 'Subject is required']"
                         required
                     ></v-select>
 
                     <v-text-field
-                        v-model="editedTask.dueDate"
+                        v-model="formattedDate"
                         label="Due Date"
                         type="date"
+                        :rules="[v => !!v || 'Date is required']"
                         required
                     ></v-text-field>
                 </v-form>
@@ -42,24 +45,44 @@
 </template>
 
 <script setup>
-import {ref, watch, computed} from 'vue'
-import {useStore} from 'vuex'
+import { ref, watch, computed } from 'vue'
+import { useStore } from 'vuex'
 
 const store = useStore()
-const props = defineProps(['taskData', 'show'])
+const props = defineProps({
+    taskData: {
+        type: Object,
+        required: true
+    },
+    show: {
+        type: Boolean,
+        required: true
+    }
+})
 const emit = defineEmits(['close', 'save'])
 
-const editedTask = ref({...props.taskData})
+const editedTask = ref({
+    ...props.taskData,
+    dueDate: props.taskData.dueDate ? new Date(props.taskData.dueDate).toISOString().split('T')[0] : ''
+})
+
+const formattedDate = computed({
+    get: () => editedTask.value.dueDate,
+    set: (value) => editedTask.value.dueDate = value
+})
 
 const formattedSubjects = computed(() => {
     return store.getters.getSubjects.map(subject => ({
         id: subject.id,
-        title: `${subject.name}`
+        title: subject.name
     }))
 })
 
 watch(() => props.taskData, (newVal) => {
-    editedTask.value = {...newVal}
+    editedTask.value = {
+        ...newVal,
+        dueDate: newVal.dueDate ? new Date(newVal.dueDate).toISOString().split('T')[0] : ''
+    }
 })
 
 const showDialog = computed({
@@ -68,8 +91,13 @@ const showDialog = computed({
 })
 
 const save = () => {
-    emit('save', editedTask.value)
-    emit('close')
+    if (editedTask.value.title && editedTask.value.subjectId && editedTask.value.dueDate) {
+        emit('save', {
+            ...editedTask.value,
+            dueDate: new Date(editedTask.value.dueDate).toISOString()
+        })
+        emit('close')
+    }
 }
 
 const close = () => {

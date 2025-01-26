@@ -331,17 +331,17 @@ const store = new createStore({
             }
         },
 
-        async completeTask({commit}, { taskData }) {
-            if(!taskData) {
-                console.error('TaskData is empty');
+        async completeTask({commit}, { taskId, pointsEarned }) {
+            if(!taskId) {
+                console.error('TaskID is empty');
                 return;
             }
-            if (taskData.pointsEarned < 0) {
+            if (pointsEarned < 0) {
                 console.error('Earned must not be negative');
                 return;
             }
             try {
-                await axios.post(api_url+'/tasks/'+taskData.taskId+"/complete", taskData);
+                await axios.post(api_url+'/tasks/'+taskId+"/complete", {pointsEarned: pointsEarned});
             } catch (error) {
                 handleApiError(this, error);
             }
