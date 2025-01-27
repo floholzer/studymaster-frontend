@@ -34,6 +34,10 @@ export default {
             {
                 text: 'Privacy Policy',
                 href: '/privacy'
+            },
+            {
+              text: 'Help',
+              href: '/help'
             }
         ],
     })

@@ -35,6 +35,7 @@ defineProps([
     margin: 0;
     overflow-wrap: break-word;
     word-break: break-word;
+    hyphens: auto;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;

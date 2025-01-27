@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import store from "@/store/index.js";
+import Help from '../views/Help.vue';
 
 const routes = [
     {
@@ -56,6 +57,12 @@ const routes = [
         name: 'semester-management',
         component: () => import('@/views/SemesterManagement.vue'),
         meta: { title: 'StudyMaster | Semester Management', requiresAuth: true },
+    },
+    {
+        path: '/help',
+        name: 'help',
+        component: () => import('../views/Help.vue'),
+        meta: { title: 'StudyMaster | Help' },
     }
 ];
 
